@@ -2,6 +2,7 @@
 WaveRange: CFD data compression utility
 
 Copyright (C) 2017  Dmitry Kolomenskiy
+
 Copyright (C) 2017  JAMSTEC
 
 This program is free software: you can redistribute it and/or modify
