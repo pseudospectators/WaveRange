@@ -44,5 +44,5 @@ III. USAGE
 3) Run the utility with the parameters read from the control files or use parameter string.
 
    Examples: 
-   ./wrenc < inmeta
+   ./wrenc < inmeta 
    ./wrdec < outmeta
