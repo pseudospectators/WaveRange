@@ -43,6 +43,6 @@ III. USAGE
 2) If necessary, copy and modify the sample 'inmeta' and 'outmeta' control files that can be found in 'tests/'.
 3) Run the utility with the parameters read from the control files or use parameter string.
 
-  Examples: 
-  ./wrenc < inmeta
-  ./wrdec < outmeta
+   Examples: 
+   ./wrenc < inmeta
+   ./wrdec < outmeta
