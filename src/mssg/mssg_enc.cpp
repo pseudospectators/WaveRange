@@ -333,7 +333,7 @@ int main( int argc, char *argv[] )
 
           // Print out the control file data
           cout << endl << "=== Parameters read from control file ===" << endl;
-          cout << "nx = " << nx << "; ny = " << ny << "; nr(=nz) = " << nz << "; dim_size(=nprocx,nprocy) = " << nprocx << ", " << nprocy << "; ndset = " << ndset << endl;
+          cout << "nx(=nlg+i_over*2) = " << nx << "; ny(=npg+j_over*2) = " << ny << "; nr(=nz) = " << nz << "; dim_size(=nprocx,nprocy) = " << nprocx << ", " << nprocy << "; ndset = " << ndset << endl;
           for (int j = 0; j<ndset; j++) cout << "record number = " << j+1 << "; field = " << dsettab[j] << endl;
 
           // Size of the velocity dataset

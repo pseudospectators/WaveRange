@@ -47,7 +47,7 @@ using namespace std;
 /* Read control file for restart files */
 void read_control_file( const char *filename, int &nx, int &ny, int &nz, int &nprocx, int &nprocy, char dsettab[NDSMAX][256], int &ndset )
 {
-    const int szpar = 50;
+    const int szpar = 200;
     int nproc, ipar, npar = 0, expect_val = 0, pos = 0, state = 0;
     char c, partab[szpar][256], valtab[szpar][256], str[256];
     ifstream is;
@@ -83,6 +83,9 @@ void read_control_file( const char *filename, int &nx, int &ny, int &nz, int &np
                 if ( (strcmp(str,"nx") == 0) ||
                      (strcmp(str,"ny") == 0) ||
                      (strcmp(str,"nr") == 0) ||
+                     (strcmp(str,"npg") == 0) ||
+                     (strcmp(str,"i_over") == 0) ||
+                     (strcmp(str,"j_over") == 0) ||
                      (strcmp(str,"nproc") == 0) || 
                      (strcmp(str,"dim_size") == 0) || 
                      (strcmp(str,"var") == 0) || 
@@ -131,21 +134,47 @@ void read_control_file( const char *filename, int &nx, int &ny, int &nz, int &np
     is.close();
 
     // Assign values of the parameter variables
-    // nx
+    int ngrids;
     for (ipar = 0; ipar < npar; ipar++)
-      if (strcmp(partab[ipar],"nx") == 0) nx = atoi(valtab[ipar]);
-    // ny
-    for (ipar = 0; ipar < npar; ipar++)
-      if (strcmp(partab[ipar],"ny") == 0) ny = atoi(valtab[ipar]); 
-    // nr (=nz)
-    for (ipar = 0; ipar < npar; ipar++)
-      if (strcmp(partab[ipar],"nr") == 0) nz = atoi(valtab[ipar]); 
-    // nproc
-    for (ipar = 0; ipar < npar; ipar++)
-      if (strcmp(partab[ipar],"nproc") == 0) nproc = atoi(valtab[ipar]);    
-    // dim_size (=nprocx)
-    for (ipar = 0; ipar < npar; ipar++)
-      if (strcmp(partab[ipar],"dim_size") == 0) nprocx = atoi(valtab[ipar]);    
+      {
+        // nx
+        if (strcmp(partab[ipar],"nx") == 0) 
+          {
+            // One grid for regional simulation
+            ngrids = 1;
+            // Set the value of nx
+            nx = atoi(valtab[ipar]);
+            // Look for ny
+            for (int jpar = 0; jpar < npar; jpar++)
+              if (strcmp(partab[jpar],"ny") == 0) ny = atoi(valtab[jpar]); 
+          }
+        // npg
+        else if (strcmp(partab[ipar],"npg") == 0) 
+          {
+            // Two grids (Yin-Yan) for global simulation
+            ngrids = 2;
+            // Set the value of npg
+            int npg = atoi(valtab[ipar]);
+            // Calculate the value of nlg, as hardcoded in MSSG
+            int nlg = 3*npg-4;
+            // Look for i_over and j_over
+            int i_over, j_over;
+            for (int jpar = 0; jpar < npar; jpar++)
+              if (strcmp(partab[jpar],"i_over") == 0) i_over = atoi(valtab[jpar]); 
+              else if (strcmp(partab[jpar],"j_over") == 0) j_over = atoi(valtab[jpar]);
+            // Calculate the value of nx, as hardcoded in MSSG
+            nx = nlg+i_over*2;
+            // Calculate the value of ny, as hardcoded in MSSG and multiplied by ngrids
+            ny = (npg+j_over*2) * ngrids;
+          }
+        // nr (=nz)
+        else if (strcmp(partab[ipar],"nr") == 0) nz = atoi(valtab[ipar]); 
+        // nproc
+        else if (strcmp(partab[ipar],"nproc") == 0) nproc = atoi(valtab[ipar]);    
+        // dim_size (=nprocx)
+        else if (strcmp(partab[ipar],"dim_size") == 0) nprocx = atoi(valtab[ipar]);
+      }
+
     // nprocy 
     nprocy = nproc / nprocx;
 
