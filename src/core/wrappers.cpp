@@ -134,7 +134,7 @@ void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag, int mx, i
     for (unsigned int k=1; k<mtot; k++) if (cutoffvec[k] < tolrel) tolrel = cutoffvec[k];
 
     // Absolute tolerance
-    tolabs = tolrel * max(fabs(minval),fabs(maxval));
+    tolabs = tolrel * fmax(fabs(minval),fabs(maxval));
 
     // Apply a correction for round-off errors in wavelet transform
     tolabs /= WAV_ACC_COEF;
