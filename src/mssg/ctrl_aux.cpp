@@ -350,6 +350,8 @@ void write_field_mssg( const char *filename, int flag_convertendian, int nbytes,
             // Endian conversion
             if (flag_convertendian)
               for (int j = 0; j < nbytes; j++) temp1[j] = temp2[nbytes-1-j];
+            else
+              for (int j = 0; j < nbytes; j++) temp1[j] = temp2[j];
 
             // Write data element in the file
             outputfile.write(reinterpret_cast<char*>(temp1), nbytes);
@@ -405,6 +407,8 @@ void read_field_mssg( const char *filename, int flag_convertendian, int nbytes, 
             // Endian conversion
             if (flag_convertendian)
               for (int j = 0; j < nbytes; j++) temp2[j] = temp1[nbytes-1-j];
+            else
+              for (int j = 0; j < nbytes; j++) temp2[j] = temp1[j];
 
             // Reinterpret as float or double
             if (nbytes == 4)
