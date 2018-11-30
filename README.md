@@ -49,3 +49,35 @@ III. USAGE
 3) Run the utility with the parameters read from the control files or use parameter string.
 
    Example: ./wrenc < inmeta; ./wrdec < outmeta
+
+IV. BRIEF DESCRIPTION OF THE FILES
+
+* config.mk
+* LICENSE.txt
+* Makefile
+* README.md
+* doc/cfdproc2017.pdf
+* src/core/defs.h  
+* src/core/wrappers.cpp
+* src/core/wrappers.h
+* src/flusi/hdf5_interfaces.cpp  
+* src/flusi/hdf5_interfaces.h
+* src/flusi/main_dec.cpp
+* src/flusi/main_enc.cpp
+* src/mssg/ctrl_aux.cpp  
+* src/mssg/ctrl_aux.h
+* src/mssg/mssg_dec.cpp
+* src/mssg/mssg_enc.cpp
+* src/rangecod/Makefile  
+* src/rangecod/port.h
+* src/rangecod/rangecod.c
+* src/rangecod/rangecod.h
+* src/waveletcdf97_3d/Makefile  
+* src/waveletcdf97_3d/waveletcdf97_3d.c
+* src/waveletcdf97_3d/waveletcdf97_3d.h
+* tests/flusi/all_enc_dec.sh 
+* tests/flusi/inmeta
+* tests/flusi/meta
+* tests/flusi/outmeta
+* tests/flusi/wrdec
+* tests/flusi/wrenc
