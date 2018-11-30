@@ -36,13 +36,15 @@ WaveRange is a utility for compression of CFD data, inspired by image processing
 
 II. COMPILING AND BUILDING
 
-1) Modify the 'config.mk' file. MPI and HDF libraries only necessary for FluSI interface. If not using it, select a serial compiler and empty HDF path.
+1) Modify the 'config.mk' file. Set the environment variables 'CC' and 'CXX' to point to the desired compilers, set the compiler flags in 'CFLAGS' and 'CXXFLAGS', and the archiver in 'AR'. 
+1a) HDF5 <https://www.hdfgroup.org/downloads/hdf5/> and MPI are required for building the FluSI interface. If compiling with HDF5 support, modify the path in 'HDF_INC' and 'HDF_LIB' to point to the valid library files. It may be necessary to use mpicxx or h5c++. 
+1b) If not using HDF5, select a serial compiler and empty 'HDF_INC' and 'HDF_LIB'.
 2) Type 'make' to build the executable files. To only build one of the interfaces, type 'make flusi' or 'make mssg'.
 3) Executables will appear in 'bin/' directory. 'flusi/' will contain compression and reconstruction utilities for FluSI output data, 'mssg/' will contain similar utilities for MSSG data. The encoder executable file names contain 'enc', the decoder executable file names contain 'dec'.
 
 III. USAGE
 
-1) Copy the executables into the same directory with the data files.
+1) Copy the executables into the same directory with the data files. Sample compressed data files can be downloaded from <https://osf.io/pz4n8/>. 
 2) If necessary, copy and modify the sample 'inmeta' and 'outmeta' control files that can be found in 'tests/'.
 3) Run the utility with the parameters read from the control files or use parameter string.
 
