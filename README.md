@@ -52,32 +52,42 @@ III. USAGE
 
 IV. BRIEF DESCRIPTION OF THE FILES
 
-* config.mk
-* LICENSE.txt
-* Makefile
-* README.md
-* doc/cfdproc2017.pdf
-* src/core/defs.h  
-* src/core/wrappers.cpp
-* src/core/wrappers.h
-* src/flusi/hdf5_interfaces.cpp  
-* src/flusi/hdf5_interfaces.h
-* src/flusi/main_dec.cpp
-* src/flusi/main_enc.cpp
-* src/mssg/ctrl_aux.cpp  
-* src/mssg/ctrl_aux.h
-* src/mssg/mssg_dec.cpp
-* src/mssg/mssg_enc.cpp
-* src/rangecod/Makefile  
-* src/rangecod/port.h
-* src/rangecod/rangecod.c
-* src/rangecod/rangecod.h
-* src/waveletcdf97_3d/Makefile  
-* src/waveletcdf97_3d/waveletcdf97_3d.c
-* src/waveletcdf97_3d/waveletcdf97_3d.h
-* tests/flusi/all_enc_dec.sh 
-* tests/flusi/inmeta
-* tests/flusi/meta
-* tests/flusi/outmeta
-* tests/flusi/wrdec
-* tests/flusi/wrenc
+* config.mk : build configuration file
+* LICENSE.txt : license file
+* Makefile : make file
+* README.md : this readme file
+* doc/cfdproc2017.pdf : brief theoretical introduction
+* src/core/defs.h : constant parameter definitions 
+* src/core/wrappers.cpp : encoding/decoding subroutines including wavelet transforn and range coding
+* src/core/wrappers.h : header for wrappers.cpp
+* src/flusi/hdf5_interfaces.cpp : subroutine for handling FluSI HDF5 files
+* src/flusi/hdf5_interfaces.h : header for hdf5_interfaces.cpp
+* src/flusi/main_dec.cpp : main FluSI decoder program
+* src/flusi/main_enc.cpp : main FluSI encoder program
+* src/mssg/ctrl_aux.cpp : subroutines for handling MSSG control files
+* src/mssg/ctrl_aux.h : header for ctrl_aux.cpp
+* src/mssg/mssg_dec.cpp : main MSSG decoder program
+* src/mssg/mssg_enc.cpp : main MSSG encoder program
+* src/rangecod/Makefile : range coder make file
+* src/rangecod/port.h : range coder constant parameters
+* src/rangecod/rangecod.c : range coder subroutines
+* src/rangecod/rangecod.h : header for rangecod.c
+* src/waveletcdf97_3d/Makefile : wavelet transform make file
+* src/waveletcdf97_3d/waveletcdf97_3d.c : wavelet transform subroutines
+* src/waveletcdf97_3d/waveletcdf97_3d.h : header for waveletcdf97_3d.c
+* tests/flusi/all_enc_dec.sh : encode/decode sample bash script for FluSI
+* tests/flusi/inmeta : example FluSI encoder parameter
+* tests/flusi/outmeta : example FluSI decoder parameters
+* tests/flusi/wrdec : symbolic link to WaveRange FluSI decoder executable
+* tests/flusi/wrenc : symbolic link to WaveRange FluSI encoder executable
+* tests/mssg/regout/all_enc_dec.sh : encode/decode sample bash script for MSSG regular output
+* tests/mssg/regout/inmeta : example MSSG regular output encoder parameters
+* tests/mssg/regout/outmeta : example MSSG regular output decoder parameters
+* tests/mssg/regout/wrmssgdec : symbolic link to WaveRange MSSG decoder executable
+* tests/mssg/regout/wrmssgenc : symbolic link to WaveRange MSSG encoder executable
+* tests/mssg/separated/all_enc_dec.sh : encode/decode sample bash script for MSSG divided restart files
+* tests/mssg/separated/wrmssgdec : symbolic link to WaveRange MSSG decoder executable
+* tests/mssg/separated/wrmssgenc : symbolic link to WaveRange MSSG encoder executable
+* tests/mssg/unified/all_enc_dec.sh : encode/decode sample bash script for MSSG united restart files
+* tests/mssg/unified/wrmssgdec : symbolic link to WaveRange MSSG decoder executable
+* tests/mssg/unified/wrmssgenc :symbolic link to WaveRange MSSG encoder executable
