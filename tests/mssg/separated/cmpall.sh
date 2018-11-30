@@ -10,7 +10,5 @@ do
 ./wrmssgdec res .enc dec 2 2 1 $i
 done
 
-./compare.out
-
 # Total encoded file size
 find . -type f -name '*.enc' -exec du -ch {} + | grep total$
