@@ -14,7 +14,7 @@ SRCMSS = src/mssg/ctrl_aux.cpp
 OBJMSS = ctrl_aux.o
 
 
-all: flusi mssg
+all: flusi mssg generic
 
 flusi: common
 	$(MKDIR) $(OUTPUTDIR)
@@ -28,6 +28,12 @@ mssg: common
 	$(CXX) -c -I$(HDF_INC) $(CXXFLAGS) $(SRCMSS)
 	$(CXX) $(CXXFLAGS) ./src/mssg/mssg_enc.cpp $(OBJCOM) $(OBJMSS) -L$(AUXDIR) -lcoders -lwcdf -o $(OUTPUTDIR)mssg/wrmssgenc
 	$(CXX) $(CXXFLAGS) ./src/mssg/mssg_dec.cpp $(OBJCOM) $(OBJMSS) -L$(AUXDIR) -lcoders -lwcdf -o $(OUTPUTDIR)mssg/wrmssgdec
+generic: generic
+	$(MKDIR) $(OUTPUTDIR)
+	$(MKDIR) $(OUTPUTDIR)generic
+	$(CXX) -c -I$(HDF_INC) $(CXXFLAGS) 
+	$(CXX) $(CXXFLAGS) ./src/mssg/gen_enc.cpp $(OBJCOM) -L$(AUXDIR) -lcoders -lwcdf -o $(OUTPUTDIR)generic/wrenc
+	$(CXX) $(CXXFLAGS) ./src/mssg/gen_dec.cpp $(OBJCOM) -L$(AUXDIR) -lcoders -lwcdf -o $(OUTPUTDIR)generic/wrdec
 common:
 	$(MKDIR) $(AUXDIR)
 	cd ./src/waveletcdf97_3d && $(MAKE) all
