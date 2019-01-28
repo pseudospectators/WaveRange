@@ -99,7 +99,7 @@ void write_field_gen( const char *filename, int idset, int ifiletype, int flag_c
       }
 
     // Write the field in a file
-    if (!idinv) // idinv != 0
+    if (!idinv) // idinv == 0
       {
         // Write in the direct order
         for (int ih = 0; ih < nh; ih++)
@@ -108,7 +108,7 @@ void write_field_gen( const char *filename, int idset, int ifiletype, int flag_c
             {
             for (int iy = 0; iy < ny; iy++)
               {
-              for (int ix = 0; ix < ny; ix++)
+              for (int ix = 0; ix < nx; ix++)
                 {
                   // 1D index 
                   unsigned long int j = (unsigned long int)(ix) + 
@@ -145,7 +145,7 @@ void write_field_gen( const char *filename, int idset, int ifiletype, int flag_c
             }
           }
       }
-    else  // idinv == 0
+    else  // idinv != 0
       {
         for (int ix = 0; ix < nx; ix++)
           {
@@ -269,7 +269,7 @@ void read_field_gen( const char *filename, int idset, int ifiletype, int flag_co
       }
  
     // Read from file
-    if (!idinv) // idinv != 0
+    if (!idinv) // idinv == 0
       {
         // Read and store in the direct order
         for (int ih = 0; ih < nh; ih++)
@@ -278,7 +278,7 @@ void read_field_gen( const char *filename, int idset, int ifiletype, int flag_co
             {
             for (int iy = 0; iy < ny; iy++)
               {
-              for (int ix = 0; ix < ny; ix++)
+              for (int ix = 0; ix < nx; ix++)
                 {
                   // Read data element from file
                   inputfile.read(reinterpret_cast<char*>(temp1), nbytes);
@@ -314,7 +314,7 @@ void read_field_gen( const char *filename, int idset, int ifiletype, int flag_co
             }
           }
       }
-    else  // idinv == 0
+    else  // idinv != 0
       {
         // Read and store in the reverse order
         for (int ix = 0; ix < nx; ix++)
