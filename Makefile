@@ -13,6 +13,9 @@ OBJFLU = hdf5_interfaces.o
 SRCMSS = src/mssg/ctrl_aux.cpp 
 OBJMSS = ctrl_aux.o
 
+SRCGEN = src/generic/gen_aux.cpp
+OBJGEN = gen_aux.o
+
 
 all: flusi mssg generic
 
@@ -28,12 +31,12 @@ mssg: common
 	$(CXX) -c -I$(HDF_INC) $(CXXFLAGS) $(SRCMSS)
 	$(CXX) $(CXXFLAGS) ./src/mssg/mssg_enc.cpp $(OBJCOM) $(OBJMSS) -L$(AUXDIR) -lcoders -lwcdf -o $(OUTPUTDIR)mssg/wrmssgenc
 	$(CXX) $(CXXFLAGS) ./src/mssg/mssg_dec.cpp $(OBJCOM) $(OBJMSS) -L$(AUXDIR) -lcoders -lwcdf -o $(OUTPUTDIR)mssg/wrmssgdec
-generic: generic
+generic: common
 	$(MKDIR) $(OUTPUTDIR)
 	$(MKDIR) $(OUTPUTDIR)generic
-	$(CXX) -c -I$(HDF_INC) $(CXXFLAGS) 
-	$(CXX) $(CXXFLAGS) ./src/mssg/gen_enc.cpp $(OBJCOM) -L$(AUXDIR) -lcoders -lwcdf -o $(OUTPUTDIR)generic/wrenc
-	$(CXX) $(CXXFLAGS) ./src/mssg/gen_dec.cpp $(OBJCOM) -L$(AUXDIR) -lcoders -lwcdf -o $(OUTPUTDIR)generic/wrdec
+	$(CXX) -c -I$(HDF_INC) $(CXXFLAGS) $(SRCGEN)
+	$(CXX) $(CXXFLAGS) ./src/generic/gen_enc.cpp $(OBJCOM) $(OBJGEN) -L$(AUXDIR) -lcoders -lwcdf -o $(OUTPUTDIR)generic/wrenc
+	$(CXX) $(CXXFLAGS) ./src/generic/gen_dec.cpp $(OBJCOM) $(OBJGEN) -L$(AUXDIR) -lcoders -lwcdf -o $(OUTPUTDIR)generic/wrdec
 common:
 	$(MKDIR) $(AUXDIR)
 	cd ./src/waveletcdf97_3d && $(MAKE) all

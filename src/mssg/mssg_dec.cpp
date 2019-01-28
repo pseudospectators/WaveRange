@@ -84,7 +84,7 @@ int main( int argc, char *argv[] )
     double minval_vec[NLAYMAX];
     unsigned long int len_enc_vec[NLAYMAX];
 
-    // I/O variable declatations
+    // I/O variable declarations
     int ifiletype = 0, iouttype = 1;
     int err = 0;
 
@@ -182,7 +182,7 @@ int main( int argc, char *argv[] )
             }
 
           // Output file name
-          out_name = out_prefix_name + ".grd";;
+          out_name = out_prefix_name + ".grd";
 
           // Proc label
           stringstream lbl;
@@ -211,13 +211,14 @@ int main( int argc, char *argv[] )
               // Allocate array
               fld_1d_rec = new double[ntot];
 
-              // Initialize array
-              for (unsigned long int j=0; j<ntot; j++) fld_1d_rec[j] = 0;
 
               // Read from the header file with coding attributes
               char dsetnamehdr[256];
               read_header_mssg_enc(fheader,it,dsetnamehdr,&tolabs,&midval,&halfspanval,&wlev,&nlay,&ntot_enc,deps_vec,minval_vec,len_enc_vec);
               //cout << " dsetnamehdr=" << dsetnamehdr << " it=" << it << endl;
+
+              // Initialize array
+              for (unsigned long int j=0; j<ntot; j++) fld_1d_rec[j] = midval;
  
               // Mask presence flag and middle value
               int mask_flag = 0;
@@ -233,7 +234,7 @@ int main( int argc, char *argv[] )
                   mask_1d_rec = new double[ntot];
 
                   // Initialize array
-                  for (unsigned long int j=0; j<ntot; j++) mask_1d_rec[j] = 0;
+                  for (unsigned long int j=0; j<ntot; j++) mask_1d_rec[j] = midval;
 
                   // Reconstruct mask
                   if (ntot_enc > 0)
@@ -445,36 +446,44 @@ int main( int argc, char *argv[] )
 
               /* Read and decode compressed data */
               // Reconstruct data if the compressed data set is non-trivial
-              if (idset > 0) if (ntot_enc > 0)
-                {
-                  // Allocate encoded data array
-                  unsigned char *data_enc = new unsigned char[ntot_enc];
+              if (idset > 0)
+                { 
+                if (ntot_enc > 0)
+                  {
+                    // Allocate encoded data array
+                    unsigned char *data_enc = new unsigned char[ntot_enc];
  
-                  // Read from file
-                  read_field_mssg_enc(finput,data_enc,ntot_enc);
+                    // Read from file
+                    read_field_mssg_enc(finput,data_enc,ntot_enc);
 
-                  /* Do decoding */
-                  // Apply decoding routine
-                  if (ifiletype == 1) 
-                    decoding_wrap(nx,ny,nz,fld_1d_rec,tolabs,midval,halfspanval,wlev,nlay,ntot_enc,deps_vec,minval_vec,len_enc_vec,data_enc);
-                  else
-                    decoding_wrap(nxloc,nyloc,nz,fld_1d_rec,tolabs,midval,halfspanval,wlev,nlay,ntot_enc,deps_vec,minval_vec,len_enc_vec,data_enc);
-                  cout << "  decode: fld_1d_rec[0]=" << fld_1d_rec[0] << " fld_1d_rec[last]=" << fld_1d_rec[ntot-1UL] << endl;
+                    /* Do decoding */
+                    // Apply decoding routine
+                    if (ifiletype == 1) 
+                      decoding_wrap(nx,ny,nz,fld_1d_rec,tolabs,midval,halfspanval,wlev,nlay,ntot_enc,deps_vec,minval_vec,len_enc_vec,data_enc);
+                    else
+                      decoding_wrap(nxloc,nyloc,nz,fld_1d_rec,tolabs,midval,halfspanval,wlev,nlay,ntot_enc,deps_vec,minval_vec,len_enc_vec,data_enc);
+                    cout << "  decode: fld_1d_rec[0]=" << fld_1d_rec[0] << " fld_1d_rec[last]=" << fld_1d_rec[ntot-1UL] << endl;
 
-                  // Calculate min and max
-                  double maxval = fld_1d_rec[0];
-                  double minval = fld_1d_rec[0];
-                  for(unsigned long int j1 = 0; j1 < ntot; j1++)
-                    {
-                      if (fld_1d_rec[j1] < minval) minval = fld_1d_rec[j1];
-                      if (fld_1d_rec[j1] > maxval) maxval = fld_1d_rec[j1];
-                    }
+                    // Calculate min and max
+                    double maxval = fld_1d_rec[0];
+                    double minval = fld_1d_rec[0];
+                    for(unsigned long int j1 = 0; j1 < ntot; j1++)
+                      {
+                        if (fld_1d_rec[j1] < minval) minval = fld_1d_rec[j1];
+                        if (fld_1d_rec[j1] > maxval) maxval = fld_1d_rec[j1];
+                      }
 
-                  // Echo min and max
-                  cout << "        min=" << minval << " max=" << maxval << endl;
+                    // Echo min and max
+                    cout << "        min=" << minval << " max=" << maxval << endl;
 
-                  // Deallocate memory
-                  delete [] data_enc;
+                    // Deallocate memory
+                    delete [] data_enc;
+                  }
+                else // ntot_enc == 0
+                  {
+                    // All elements are equal
+                    for (unsigned long int j=0; j<ntot; j++) fld_1d_rec[j] = midval;
+                  }
                 }
 
               /* Append binary floating-point files */

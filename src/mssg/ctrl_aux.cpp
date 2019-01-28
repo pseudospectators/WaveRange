@@ -349,9 +349,9 @@ void write_field_mssg( const char *filename, int flag_convertendian, int nbytes,
 
             // Endian conversion
             if (flag_convertendian)
-              for (int j = 0; j < nbytes; j++) temp1[j] = temp2[nbytes-1-j];
+              for (int j1 = 0; j1 < nbytes; j1++) temp1[j1] = temp2[nbytes-1-j1];
             else
-              for (int j = 0; j < nbytes; j++) temp1[j] = temp2[j];
+              for (int j1 = 0; j1 < nbytes; j1++) temp1[j1] = temp2[j1];
 
             // Write data element in the file
             outputfile.write(reinterpret_cast<char*>(temp1), nbytes);
@@ -406,9 +406,9 @@ void read_field_mssg( const char *filename, int flag_convertendian, int nbytes, 
 
             // Endian conversion
             if (flag_convertendian)
-              for (int j = 0; j < nbytes; j++) temp2[j] = temp1[nbytes-1-j];
+              for (int j1 = 0; j1 < nbytes; j1++) temp2[j1] = temp1[nbytes-1-j1];
             else
-              for (int j = 0; j < nbytes; j++) temp2[j] = temp1[j];
+              for (int j1 = 0; j1 < nbytes; j1++) temp2[j1] = temp1[j1];
 
             // Reinterpret as float or double
             if (nbytes == 4)
@@ -537,13 +537,13 @@ void read_header_mssg_enc( ifstream &fs, int idset, char *dsetname, double *tola
      {
        for (int j=0; j<*nlay; j++) 
          fs >> deps_vec[j];
-         getline(fs, str);
+       getline(fs, str);
        for (int j=0; j<*nlay; j++) 
          fs >> minval_vec[j];
-         getline(fs, str);
+       getline(fs, str);
        for (int j=0; j<*nlay; j++) 
          fs >> len_enc_vec[j];
-         getline(fs, str);
+       getline(fs, str);
      }
    // Print out values from the header file
    cout << "  tolabs; midval; halfspanval; wlev; nlay; ntot_enc;";

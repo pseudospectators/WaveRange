@@ -70,7 +70,7 @@ int main( int argc, char *argv[] )
     double tol_base = 1e-16;
 
     // Floating point input file endian conversion flag (0: do not convert; 1: convert)
-    int flag_convertendian;
+    int flag_convertendian = 1;
 
     // Floating point input file precision (4: single; 8: double)
     int nbytes;
