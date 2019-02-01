@@ -2,7 +2,16 @@
 WaveRange: CFD data compression utility
 
 I. GENERAL INFORMATION
+  
+Reference:
+doc/cfdproc2017.pdf
+Dmitry Kolomenskiy, Ryo Onishi and Hitoshi Uehara "Wavelet-Based Compression of CFD Big Data"
+Proceedings of the 31st Computational Fluid Dynamics Symposium, Kyoto, December 12-14, 2017
+Paper No. C08-1
 
+This work is supported by the FLAGSHIP2020, MEXT within the priority study4 
+(Advancement of meteorological and global environmental predictions utilizing 
+observational “Big Data”).
 WaveRange is a utility for compression of CFD data, inspired by image processing. It uses wavelet decomposition and subsequent range coding with quantization suitable for floating-point data.
 
 Copyright (C) 2017  Dmitry Kolomenskiy
@@ -23,16 +32,6 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  
-Reference:
-doc/cfdproc2017.pdf
-Dmitry Kolomenskiy, Ryo Onishi and Hitoshi Uehara "Wavelet-Based Compression of CFD Big Data"
-Proceedings of the 31st Computational Fluid Dynamics Symposium, Kyoto, December 12-14, 2017
-Paper No. C08-1
-
-This work is supported by the FLAGSHIP2020, MEXT within the priority study4 
-(Advancement of meteorological and global environmental predictions utilizing 
-observational “Big Data”).
 
 II. COMPILING AND BUILDING
 
