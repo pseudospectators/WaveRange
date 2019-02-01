@@ -1,6 +1,10 @@
 # WaveRange
 WaveRange: CFD data compression utility
 
+I. GENERAL INFORMATION
+
+WaveRange is a utility for compression of CFD data, inspired by image processing. It uses wavelet decomposition and subsequent range coding with quantization suitable for floating-point data.
+
 Copyright (C) 2017  Dmitry Kolomenskiy
 
 Copyright (C) 2017  Ryo Onishi
@@ -29,10 +33,6 @@ Paper No. C08-1
 This work is supported by the FLAGSHIP2020, MEXT within the priority study4 
 (Advancement of meteorological and global environmental predictions utilizing 
 observational “Big Data”).
-
-I. GENERAL INFORMATION
-
-WaveRange is a utility for compression of CFD data, inspired by image processing. It uses wavelet decomposition and subsequent range coding with quantization suitable for floating-point data.
 
 II. COMPILING AND BUILDING
 
