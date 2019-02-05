@@ -37,6 +37,7 @@
 #include <exception>
 #include <iomanip>
 #include <limits>
+#include <cassert>
 
 #include "../core/defs.h"
 #include "gen_aux.h"
@@ -66,9 +67,15 @@ void write_field_gen( const char *filename, int idset, int ifiletype, int flag_c
 
     // Open input file
     if (idset == 0)
-      outputfile.open(filename, ios::out | ios::binary | ios::trunc);
+      {
+        outputfile.open(filename, ios::out | ios::binary | ios::trunc);
+        assert(outputfile.is_open());
+      }
     else
-      outputfile.open(filename, ios::out | ios::binary | ios::app);
+      {
+        outputfile.open(filename, ios::out | ios::binary | ios::app);
+        assert(outputfile.is_open());
+      }
 
     // Temporary array for conversion
     unsigned char *temp2;
@@ -215,7 +222,7 @@ void write_field_gen( const char *filename, int idset, int ifiletype, int flag_c
 
 
 /* Read a field from an unformatted fortran binary file */
-void read_field_gen( const char *filename, int idset, int ifiletype, int flag_convertendian, int nbytes, unsigned char *recl, int nx, int ny, int nz, int nh, int idinv, unsigned long int *btpos, double *fld )
+void read_field_gen( const char *filename, int idset, int ifiletype, int flag_convertendian, int nbytes, unsigned char *recl, int nx, int ny, int nz, int nh, int idinv, long *btpos, double *fld )
 {
     // I/O variable declarations
     ifstream inputfile;
@@ -236,10 +243,10 @@ void read_field_gen( const char *filename, int idset, int ifiletype, int flag_co
 
     // Open input file
     inputfile.open(filename, ios::in|ios::binary);
+    assert(inputfile.is_open());
 
-    // Skip preceding datasets, read by blocks of 1 byte
-    for (unsigned long int j = 0UL; j < *btpos/4; j++ )
-      inputfile.read(reinterpret_cast<char*>(foo), 4);
+    // Skip preceding datasets
+    inputfile.seekg(*btpos);
 
     // If fortran sequential access file, read the record length.
     // See http://gcc.gnu.org/onlinedocs/gcc-3.4.4/g77/Portable-Unformatted-Files.html#fn-1
@@ -251,7 +258,7 @@ void read_field_gen( const char *filename, int idset, int ifiletype, int flag_co
     // even with the same basic number format. 
     if (ifiletype == 0) // Fortran sequential with 4-byte record length
       {
-        *btpos += 4UL;
+        *btpos += 4L;
         inputfile.read(reinterpret_cast<char*>(foo), 4); 
         if (flag_convertendian)
           for (int j1 = 0; j1 < 4; j1++) recl[j1] = foo[4-1-j1];
@@ -260,7 +267,7 @@ void read_field_gen( const char *filename, int idset, int ifiletype, int flag_co
       }
     else if (ifiletype == 1) // Fortran sequential with 8-byte record length
       { 
-        *btpos += 8UL;
+        *btpos += 8L;
         inputfile.read(reinterpret_cast<char*>(foo), 8); 
         if (flag_convertendian)
           for (int j1 = 0; j1 < 8; j1++) recl[j1] = foo[8-1-j1];
@@ -293,12 +300,12 @@ void read_field_gen( const char *filename, int idset, int ifiletype, int flag_co
                   if (nbytes == 4)
                     {
                       buf = reinterpret_cast<float&>(temp2);
-                      *btpos += 4UL;
+                      *btpos += 4L;
                     }
                   else
                     {
                       buf = reinterpret_cast<double&>(temp2);
-                      *btpos += 8UL;
+                      *btpos += 8L;
                     }
 
                   // 1D index 
@@ -338,12 +345,12 @@ void read_field_gen( const char *filename, int idset, int ifiletype, int flag_co
                   if (nbytes == 4)
                     {
                       buf = reinterpret_cast<float&>(temp2);
-                      *btpos += 4UL;
+                      *btpos += 4L;
                     }
                   else
                     {
                       buf = reinterpret_cast<double&>(temp2);
-                      *btpos += 8UL;
+                      *btpos += 8L;
                     }
 
                   // 1D index 
@@ -363,12 +370,12 @@ void read_field_gen( const char *filename, int idset, int ifiletype, int flag_co
     // If fortran sequential access file, read the record length again and discard the value.
     if (ifiletype == 0) // Fortran sequential with 4-byte record length
       {
-        *btpos += 4UL;
+        *btpos += 4L;
         inputfile.read(reinterpret_cast<char*>(foo), 4); 
       }
     else if (ifiletype == 1) // Fortran sequential with 8-byte record length
       { 
-        *btpos += 8UL;
+        *btpos += 8L;
         inputfile.read(reinterpret_cast<char*>(foo), 8); 
       }
 
@@ -390,6 +397,7 @@ void write_field_gen_enc( const char *filename, unsigned char *fld, unsigned lon
 {
     ofstream outputfile;
     outputfile.open(filename, ios::binary|ios::out|ios::app);
+    assert(outputfile.is_open());
     outputfile.write(reinterpret_cast<char*>(fld), ntot_enc);
     outputfile.close();
 }
@@ -420,6 +428,7 @@ void write_field_gen_raw( const char *filename, int nbytes, double *fld, unsigne
 
     // File open
     outputfile.open(filename, ios::binary|ios::out|ios::app);
+    assert(outputfile.is_open());
 
     // 1d loop for all elements of the array
     for (int j = 0; j < ntot; j++)
@@ -488,6 +497,7 @@ void write_header_gen_enc( const char *filename, int idset, int *nbytes, unsigne
    // Open file
    ofstream fs;
    fs.open(filename, ofstream::out|ofstream::app);
+   assert(fs.is_open());
 
    // Append with a new dataset
    fs << " -----" << endl;

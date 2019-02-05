@@ -32,7 +32,7 @@
 /* Write a field to an unformatted fortran binary file */
 void write_field_gen( const char *filename, int idset, int ifiletype, int flag_convertendian, int nbytes, unsigned char *recl, int nx, int ny, int nz, int nh, int idinv, double *fld );
 /* Read a field from an unformatted fortran binary file */
-void read_field_gen( const char *filename, int idset, int ifiletype, int flag_convertendian, int nbytes, unsigned char *recl, int nx, int ny, int nz, int nh, int idinv, unsigned long int *btpos, double *fld );
+void read_field_gen( const char *filename, int idset, int ifiletype, int flag_convertendian, int nbytes, unsigned char *recl, int nx, int ny, int nz, int nh, int idinv, long *btpos, double *fld );
 /* Write unsigned char type data set */
 void write_field_gen_enc( const char *filename, unsigned char *fld, unsigned long int ntot_enc );
 /* Read unsigned char type data set */

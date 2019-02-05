@@ -40,6 +40,7 @@
 #include <sstream>
 #include <iomanip>
 #include <limits>
+#include <cassert>
 
 #include "../core/defs.h"
 #include "../core/wrappers.h"
@@ -187,6 +188,7 @@ int main( int argc, char *argv[] )
           // Create header file
           fstream fheader;
           fheader.open(header_name.c_str(), fstream::out | fstream::trunc);
+          assert(fheader.is_open());
           fheader << " ===== Header file for compressed MSSG regular output data =====" << endl;
           fheader << " Coder version: " << CODER_VERSION << endl;
           fheader << " File name prefix: " << prefix_name.c_str() << endl;
@@ -200,6 +202,7 @@ int main( int argc, char *argv[] )
           // Create a new encoded data file. Overwrite if exists
           ofstream foutput;
           foutput.open(out_name.c_str(), ios::binary|ios::out|ios::trunc);
+          assert(foutput.is_open());
           foutput.close();
 
           // Loop for all time instants in the dataset
@@ -380,6 +383,7 @@ int main( int argc, char *argv[] )
           // Create header file
           fstream fheader;
           fheader.open(header_name.c_str(), fstream::out | fstream::trunc);
+          assert(fheader.is_open());
           fheader << " ===== Header file for compressed MSSG restart data =====" << endl;
           fheader << " Coder version: " << CODER_VERSION << endl;
           fheader << " File name prefix: " << prefix_name.c_str() << endl;
@@ -414,6 +418,7 @@ int main( int argc, char *argv[] )
           // Create a new encoded data file. Overwrite if exists
           ofstream foutput;
           foutput.open(out_name.c_str(), ios::binary|ios::out|ios::trunc);
+          assert(foutput.is_open());
           foutput.close();
 
           /* Encoding: loop for all datasets */

@@ -41,6 +41,7 @@
 #include <sstream>
 #include <iomanip>
 #include <limits>
+#include <cassert>
 
 #include "../core/defs.h"
 #include "../core/wrappers.h"
@@ -156,6 +157,7 @@ int main( int argc, char *argv[] )
           // Open header file
           ifstream fheader;
           fheader.open(header_name.c_str(), fstream::in);
+          assert(fheader.is_open());
 
           // Skip first 5 lines from the header file
           string str; 
@@ -169,6 +171,7 @@ int main( int argc, char *argv[] )
           // Open encoded data file name
           ifstream finput;
           finput.open(in_name.c_str(), ios::binary|ios::in);
+          assert(finput.is_open());
 
           // Loop for all fields in the dataset
           for (int it=0; it<nf; it++)

@@ -37,6 +37,7 @@
 #include <exception>
 #include <iomanip>
 #include <limits>
+#include <cassert>
 
 #include "../core/defs.h"
 #include "ctrl_aux.h"
@@ -54,6 +55,7 @@ void read_control_file( const char *filename, int &nx, int &ny, int &nz, int &np
     
     // Open the control file
     is.open(filename);
+    assert(is.is_open());
     if (!is) 
       {
         // Display error message
@@ -203,6 +205,7 @@ void read_control_file_grads( const char *filename, int &nx, int &ny, int &nz, i
     
     // Open the control file
     is.open(filename);
+    assert(is.is_open());
     if (!is) 
       {
         // Display error message
@@ -312,9 +315,15 @@ void write_field_mssg( const char *filename, int flag_convertendian, int nbytes,
 
     // Open input file
     if (idset == 0)
-      outputfile.open(filename, ios::out | ios::binary | ios::trunc);
+      {
+        outputfile.open(filename, ios::out | ios::binary | ios::trunc);
+        assert(outputfile.is_open());
+      }
     else
-      outputfile.open(filename, ios::out | ios::binary | ios::app);
+      {
+        outputfile.open(filename, ios::out | ios::binary | ios::app);
+        assert(outputfile.is_open());
+      }
 
     // Temporary array for conversion
     unsigned char *temp2;
@@ -386,13 +395,11 @@ void read_field_mssg( const char *filename, int flag_convertendian, int nbytes, 
 
     // Open input file
     inputfile.open(filename, ios::in|ios::binary);
+    assert(inputfile.is_open());
 
     // Skip preceding datasets 
-    for (int j = 0; j < idset; j++ )
-      for (int iz = 0; iz < nz; iz++)
-        for (int iy = iyst; iy < iyst+nyloc; iy++)
-          for (int ix = ixst; ix < ixst+nxloc; ix++)
-            inputfile.read(reinterpret_cast<char*>(temp1), nbytes);
+    long btpos = idset*nz*(iyst+nyloc)*(ixst+nxloc)*nbytes;
+    inputfile.seekg(btpos);
 
     // Read in fortran order
     for (int iz = 0; iz < nz; iz++)
@@ -445,6 +452,7 @@ void write_field_mssg_enc( const char *filename, unsigned char *fld, unsigned lo
 {
     ofstream outputfile;
     outputfile.open(filename, ios::binary|ios::out|ios::app);
+    assert(outputfile.is_open());
     outputfile.write(reinterpret_cast<char*>(fld), ntot_enc);
     outputfile.close();
 }
@@ -463,6 +471,7 @@ void write_header_mssg_enc( const char *filename, int idset, const char *dsetnam
    // Open file
    ofstream fs;
    fs.open(filename, ofstream::out|ofstream::app);
+   assert(fs.is_open());
 
    // Append with a new dataset
    fs << " -----" << endl;

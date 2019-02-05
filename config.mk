@@ -18,10 +18,12 @@ AR = ar
 
 # Production C++ flags
 #CXXFLAGS = -Xp -Kexceptions
+#CXXFLAGS = -Caopt
 CXXFLAGS = -Wall -D__STDC_LIMIT_MACROS
 
 # C compiler flags
 #CFLAGS = -c -Xa
+#CFLAGS = -c -Caopt
 CFLAGS = -Wall -c -O3 -fomit-frame-pointer -funroll-loops
 
 # HDF path (optional)

@@ -40,6 +40,7 @@
 #include <sstream>
 #include <iomanip>
 #include <limits>
+#include <cassert>
 
 #include "../core/defs.h"
 #include "../core/wrappers.h"
@@ -99,7 +100,7 @@ int main( int argc, char *argv[] )
 
     // I/O read buffer string, current position in the input file, Fortran record length
     string bar;
-    unsigned long int btpos = 0UL;
+    long btpos = 0L;
     unsigned char recl[8];
     for (int j = 0; j < 8; j++) recl[j] = 0;
 
@@ -257,6 +258,7 @@ int main( int argc, char *argv[] )
     // Create header file
     fstream fheader;
     fheader.open(header_name.c_str(), fstream::out | fstream::trunc);
+    assert(fheader.is_open());
     fheader << " ===== Header file for compressed data =====" << endl;
     fheader << " Coder version: " << CODER_VERSION << endl;
     fheader << " Encoded data file name: " << out_name.c_str() << endl;
@@ -269,6 +271,7 @@ int main( int argc, char *argv[] )
     // Create a new encoded data file. Overwrite if exists
     ofstream foutput;
     foutput.open(out_name.c_str(), ios::binary|ios::out|ios::trunc);
+    assert(foutput.is_open());
     foutput.close();
 
     /* Encoding */
