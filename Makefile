@@ -13,7 +13,6 @@ OBJMSS = ctrl_aux.o
 SRCGEN = src/generic/gen_aux.cpp
 OBJGEN = gen_aux.o
 
-
 all: flusi mssg generic
 
 flusi: common
