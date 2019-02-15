@@ -7,7 +7,8 @@ CXXSOURCES = wrappers.cpp
 
 ifeq ($(CC),gcc)
   CPICFLAG = -fPIC
-  SHARELIB = gcc -shared -o $(OUTPUTDIR)libwaverange.so $(OBJECTC)
+  SODIR = ../../bin/
+  SHARELIB = gcc -shared -o $(SODIR)libwaverange.so $(OBJECTC)
 else
   CPICFLAG = 
   SHARELIB =
