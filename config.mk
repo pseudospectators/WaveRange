@@ -11,6 +11,9 @@ CC = gcc
 #AR = sxar
 AR = ar
 
+# C and C++ "compile but do not link" flag
+CDNLFLAG = -c
+
 # C++ compiler flags
 # Debug C++ flags
 #CXXFLAGS = -Wall -D__STDC_LIMIT_MACROS -fsanitize=bounds
@@ -22,9 +25,9 @@ AR = ar
 CXXFLAGS = -Wall -D__STDC_LIMIT_MACROS
 
 # C compiler flags
-#CFLAGS = -c -Xa
-#CFLAGS = -c -Caopt
-CFLAGS = -Wall -c -O3 -fomit-frame-pointer -funroll-loops
+#CFLAGS = -Xa
+#CFLAGS = -Caopt
+CFLAGS = -Wall -O3 -fomit-frame-pointer -funroll-loops
 
 # HDF path (optional)
 HDF_INC = $(HDF_ROOT)/include/

@@ -36,7 +36,7 @@
 #include <math.h>
 
 /* Three-dimensional wavelet transform using CDF9/7 wavelets */
-extern void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X);
+void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X);
 
 /* Convert 3D index from physical space to wavelet space */
-extern void ind_p2w_3d(int lvlin, int N1in, int N2in, int N3in, int i1in, int i2in, int i3in, int *lvl, int *i1, int *i2, int *i3);
+void ind_p2w_3d(int lvlin, int N1in, int N2in, int N3in, int i1in, int i2in, int i3in, int *lvl, int *i1, int *i2, int *i3);
