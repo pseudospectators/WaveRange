@@ -21,12 +21,12 @@ CDNLFLAG = -c
 
 # Production C++ flags
 #CXXFLAGS = -Xp -Kexceptions
-#CXXFLAGS = -Caopt
+#CXXFLAGS = -Caopt -Xp -Kexceptions
 CXXFLAGS = -Wall -D__STDC_LIMIT_MACROS
 
 # C compiler flags
 #CFLAGS = -Xa
-#CFLAGS = -Caopt
+#CFLAGS = -Caopt -Xa
 CFLAGS = -Wall -O3 -fomit-frame-pointer -funroll-loops
 
 # HDF path (optional)
