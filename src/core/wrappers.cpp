@@ -52,7 +52,7 @@ using namespace std;
 
 
 /* Calculate local precision */
-double lcl_prec(int nx, int ny, int nz, int jx, int jy, int jz, int mx, int my, int mz, double *cutoffvec)
+static double lcl_prec(int nx, int ny, int nz, int jx, int jy, int jz, int mx, int my, int mz, double *cutoffvec)
 {
     // Cartesian coordinates of the local precision cutoff block
     int kx = int(double(jx)/double(nx)*double(mx));
@@ -64,8 +64,178 @@ double lcl_prec(int nx, int ny, int nz, int jx, int jy, int jz, int mx, int my, 
 }
 
 
+/* Use the range encoder to code an array fld_q */ 
+static void range_encode(unsigned char *fld_q, unsigned long int ntot, unsigned char *enc_q, unsigned long int& len_out_q)
+{   freq counts[257], blocksize, i;
+    int buffer[BLOCKSIZE];
+    unsigned long int j;
+    unsigned long int pos_in = 0;
+    unsigned long int pos_out = 0;
+
+    // Allocate a range coder object
+    rangecoder *rc = (rangecoder*)malloc(sizeof(rangecoder));
+
+    // Initialize data buffer
+    init_databuf(rc,2*BLOCKSIZE+1000);
+
+    // Start up the range coder, first byte 0, no header
+    start_encoding(rc,0,0);
+
+    // Coding: loop for all blocks of the input vector
+    while (1)
+    {
+        // Put data in a buffer
+        for (blocksize = 0; blocksize < BLOCKSIZE; blocksize++) {
+          buffer[blocksize] = fld_q[pos_in];
+          pos_in++; 
+          if (pos_in>ntot) break;
+        }
+
+        // Block start marker
+        encode_freq(rc,1,1,2);
+
+        // Get the statistics 
+        countblock(buffer,blocksize,counts);
+
+        // Write the statistics.
+        // Cant use putchar or other since we are after start of the rangecoder 
+        // as you can see the rangecoder doesn't care where probabilities come 
+        // from, it uses a flat distribution of 0..0xffff in encode_short. 
+        for(i=0; i<256; i++)
+            encode_short(rc,counts[i]);
+
+        // Store in counters[i] the number of all bytes < i, so sum up 
+        counts[256] = blocksize;
+        for (i=256; i; i--)
+            counts[i-1] = counts[i]-counts[i-1];
+
+        // Output the encoded symbols 
+        for(i=0; i<blocksize; i++) {
+            int ch = buffer[i];
+            encode_freq(rc,counts[ch+1]-counts[ch],counts[ch],counts[256]);
+        }
+
+        // Copy data from a buffer to the output vector
+        for (j = 0; j < rc->datapos; j++) {
+          enc_q[pos_out++] = rc->databuf[j];
+        }
+
+        // Reset the buffer    
+        rc->datapos = 0;
+
+        // Terminate if no more data
+        if (blocksize<BLOCKSIZE) break;
+    }
+
+    // Flag absence of next block by a bit 
+    encode_freq(rc,1,0,2);
+
+    // Finalize the encoder 
+    done_encoding(rc);
+
+    // Copy data from a buffer to the output vector
+    for (j = 0; j < rc->datapos; j++) {
+      enc_q[pos_out++] = rc->databuf[j];
+    }
+
+    // True length of the encoded array
+    len_out_q = pos_out;
+
+    // Deallocate data buffer
+    free_databuf(rc);
+
+    // Deallocate range coder object
+    free(rc);
+}
+
+
+/* Decode the range-encoded data enc_q */
+static void range_decode(unsigned char *enc_q, unsigned long int len_out_q, unsigned char *dec_q, unsigned long int ntot)
+{   freq counts[257], blocksize, i, cf, symbol, middle, first, last;
+
+    // Allocate a range coder object
+    rangecoder *rc = (rangecoder*)malloc(sizeof(rangecoder));
+
+    // Initialize data buffer
+    rc->help = 0;
+    unsigned long int pos_out = 0;
+    init_databuf(rc,len_out_q);
+    for(unsigned long int j = 0; j < len_out_q; j++) rc->databuf[j] = enc_q[j];
+    rc->datalen = len_out_q;
+    rc->datapos = 0;
+
+    // Start decoding
+    if (start_decoding(rc) != 0)
+    {   fprintf(stderr,"could not successfully open input data\n");
+        exit(1);
+    }
+
+    // Decoding: loop for all blocks of the input vector
+    while (cf = decode_culfreq(rc,2))
+    {   // Read the beginning of the block
+        decode_update(rc,1,1,2);
+
+        // Read frequencies
+        readcounts(rc,counts);
+
+        // Figure out blocksize by summing counts; also use counts as in encoder 
+        blocksize = 0;
+        for (i=0; i<256; i++)
+        {   freq tmp = counts[i];
+            counts[i] = blocksize;
+            blocksize += tmp;
+        }
+        counts[256] = blocksize;
+
+        for (i=0; i<blocksize; i++)
+        {   // Decode frequency
+            cf = decode_culfreq(rc,blocksize);
+            // Figure out nearst symbol using a binary search
+            first = 0;
+            last = 256;
+            middle = (first+last)/2;
+            while (first <= last)
+            {
+              if(counts[middle] < cf)
+              {
+                first = middle + 1;
+              }
+              else if(counts[middle] == cf)
+              {
+                break;
+              }
+              else
+              {
+                last = middle - 1;
+              }
+              middle = (first + last)/2;
+            }
+            if(first > last)
+            {
+              middle = last;
+            }
+            // If some symbols have zero frequency, skip them
+            for (symbol=middle; counts[symbol+1]<=cf; symbol++);
+            // Update the decoder
+            decode_update(rc, counts[symbol+1]-counts[symbol],counts[symbol],blocksize);
+            // Store the decoded element
+            dec_q[pos_out++] = symbol;
+        }
+    }
+
+    // Finalize decoding 
+    done_decoding(rc);
+
+    // Deallocate data buffer
+    free_databuf(rc);
+
+    // Deallocate range coder object
+    free(rc);
+}
+
+
 /* Encoding subroutine with wavelet transform and range coding */ 
-void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag, int mx, int my, int mz, double *cutoffvec, double& tolabs, double& midval, double& halfspanval, unsigned char& wlev, unsigned char& nlay, unsigned long int& ntot_enc, double *deps_vec, double *minval_vec, unsigned long int *len_enc_vec, unsigned char *data_enc)
+extern "C" void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag, int mx, int my, int mz, double *cutoffvec, double& tolabs, double& midval, double& halfspanval, unsigned char& wlev, unsigned char& nlay, unsigned long int& ntot_enc, double *deps_vec, double *minval_vec, unsigned long int *len_enc_vec, unsigned char *data_enc)
 {
     /* Wavelet decomposition */
     // Print wavelet decomposition status
@@ -286,7 +456,7 @@ void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag, int mx, i
 
 
 /* Decoding subroutine with range decoding and inverse wavelet transform*/ 
-void decoding_wrap(int nx, int ny, int nz, double *fld_1d, double& tolabs, double& midval, double& halfspanval, unsigned char& wlev, unsigned char& nlay, unsigned long int& ntot_enc, double *deps_vec, double *minval_vec, unsigned long int *len_enc_vec, unsigned char *data_enc)
+extern "C" void decoding_wrap(int nx, int ny, int nz, double *fld_1d, double& tolabs, double& midval, double& halfspanval, unsigned char& wlev, unsigned char& nlay, unsigned long int& ntot_enc, double *deps_vec, double *minval_vec, unsigned long int *len_enc_vec, unsigned char *data_enc)
 {
     // Total number of elements
     unsigned long int ntot = (unsigned long int)(nx)*(unsigned long int)(ny)*(unsigned long int)(nz);
@@ -357,175 +527,5 @@ void decoding_wrap(int nx, int ny, int nz, double *fld_1d, double& tolabs, doubl
     // Deallocate memory
     delete [] enc_q;
     delete [] dec_q;
-}
-
-
-/* Use the range encoder to code an array fld_q */ 
-void range_encode(unsigned char *fld_q, unsigned long int ntot, unsigned char *enc_q, unsigned long int& len_out_q)
-{   freq counts[257], blocksize, i;
-    int buffer[BLOCKSIZE];
-    unsigned long int j;
-    unsigned long int pos_in = 0;
-    unsigned long int pos_out = 0;
-
-    // Allocate a range coder object
-    rangecoder *rc = (rangecoder*)malloc(sizeof(rangecoder));
-
-    // Initialize data buffer
-    init_databuf(rc,2*BLOCKSIZE+1000);
-
-    // Start up the range coder, first byte 0, no header
-    start_encoding(rc,0,0);
-
-    // Coding: loop for all blocks of the input vector
-    while (1)
-    {
-        // Put data in a buffer
-        for (blocksize = 0; blocksize < BLOCKSIZE; blocksize++) {
-          buffer[blocksize] = fld_q[pos_in];
-          pos_in++; 
-          if (pos_in>ntot) break;
-        }
-
-        // Block start marker
-        encode_freq(rc,1,1,2);
-
-        // Get the statistics 
-        countblock(buffer,blocksize,counts);
-
-        // Write the statistics.
-        // Cant use putchar or other since we are after start of the rangecoder 
-        // as you can see the rangecoder doesn't care where probabilities come 
-        // from, it uses a flat distribution of 0..0xffff in encode_short. 
-        for(i=0; i<256; i++)
-            encode_short(rc,counts[i]);
-
-        // Store in counters[i] the number of all bytes < i, so sum up 
-        counts[256] = blocksize;
-        for (i=256; i; i--)
-            counts[i-1] = counts[i]-counts[i-1];
-
-        // Output the encoded symbols 
-        for(i=0; i<blocksize; i++) {
-            int ch = buffer[i];
-            encode_freq(rc,counts[ch+1]-counts[ch],counts[ch],counts[256]);
-        }
-
-        // Copy data from a buffer to the output vector
-        for (j = 0; j < rc->datapos; j++) {
-          enc_q[pos_out++] = rc->databuf[j];
-        }
-
-        // Reset the buffer    
-        rc->datapos = 0;
-
-        // Terminate if no more data
-        if (blocksize<BLOCKSIZE) break;
-    }
-
-    // Flag absence of next block by a bit 
-    encode_freq(rc,1,0,2);
-
-    // Finalize the encoder 
-    done_encoding(rc);
-
-    // Copy data from a buffer to the output vector
-    for (j = 0; j < rc->datapos; j++) {
-      enc_q[pos_out++] = rc->databuf[j];
-    }
-
-    // True length of the encoded array
-    len_out_q = pos_out;
-
-    // Deallocate data buffer
-    free_databuf(rc);
-
-    // Deallocate range coder object
-    free(rc);
-}
-
-
-/* Decode the range-encoded data enc_q */
-void range_decode(unsigned char *enc_q, unsigned long int len_out_q, unsigned char *dec_q, unsigned long int ntot)
-{   freq counts[257], blocksize, i, cf, symbol, middle, first, last;
-
-    // Allocate a range coder object
-    rangecoder *rc = (rangecoder*)malloc(sizeof(rangecoder));
-
-    // Initialize data buffer
-    rc->help = 0;
-    unsigned long int pos_out = 0;
-    init_databuf(rc,len_out_q);
-    for(unsigned long int j = 0; j < len_out_q; j++) rc->databuf[j] = enc_q[j];
-    rc->datalen = len_out_q;
-    rc->datapos = 0;
-
-    // Start decoding
-    if (start_decoding(rc) != 0)
-    {   fprintf(stderr,"could not successfully open input data\n");
-        exit(1);
-    }
-
-    // Decoding: loop for all blocks of the input vector
-    while (cf = decode_culfreq(rc,2))
-    {   // Read the beginning of the block
-        decode_update(rc,1,1,2);
-
-        // Read frequencies
-        readcounts(rc,counts);
-
-        // Figure out blocksize by summing counts; also use counts as in encoder 
-        blocksize = 0;
-        for (i=0; i<256; i++)
-        {   freq tmp = counts[i];
-            counts[i] = blocksize;
-            blocksize += tmp;
-        }
-        counts[256] = blocksize;
-
-        for (i=0; i<blocksize; i++)
-        {   // Decode frequency
-            cf = decode_culfreq(rc,blocksize);
-            // Figure out nearst symbol using a binary search
-            first = 0;
-            last = 256;
-            middle = (first+last)/2;
-            while (first <= last)
-            {
-              if(counts[middle] < cf)
-              {
-                first = middle + 1;
-              }
-              else if(counts[middle] == cf)
-              {
-                break;
-              }
-              else
-              {
-                last = middle - 1;
-              }
-              middle = (first + last)/2;
-            }
-            if(first > last)
-            {
-              middle = last;
-            }
-            // If some symbols have zero frequency, skip them
-            for (symbol=middle; counts[symbol+1]<=cf; symbol++);
-            // Update the decoder
-            decode_update(rc, counts[symbol+1]-counts[symbol],counts[symbol],blocksize);
-            // Store the decoded element
-            dec_q[pos_out++] = symbol;
-        }
-    }
-
-    // Finalize decoding 
-    done_decoding(rc);
-
-    // Deallocate data buffer
-    free_databuf(rc);
-
-    // Deallocate range coder object
-    free(rc);
 }
 

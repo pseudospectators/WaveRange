@@ -1,6 +1,7 @@
 include config.mk
 
 OUTPUTDIR = ./bin/
+LIBDIR = ./lib/
 AUXDIR = ./libc/
 MKDIR = mkdir -p  
 
@@ -48,5 +49,6 @@ clean:
 	cd ./src/rangecod && $(MAKE) clean
 	$(RM) -rf $(OUTPUTDIR)
 	$(RM) -rf $(AUXDIR)
+	$(RM) -rf $(LIBDIR)
 	$(RM) ./*.gc??
 	$(RM) ./*.o

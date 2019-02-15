@@ -30,12 +30,7 @@
 */
 
 /* Encoding subroutine with wavelet transform and range coding */ 
-void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag, int mx, int my, int mz, double *cutoffvec, double& tolabs, double& midval, double& halfspanval, unsigned char& wlev, unsigned char& nlay, unsigned long int& ntot_enc, double *deps_vec, double *minval_vec, unsigned long int *len_enc_vec, unsigned char *data_enc);
+extern "C" void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag, int mx, int my, int mz, double *cutoffvec, double& tolabs, double& midval, double& halfspanval, unsigned char& wlev, unsigned char& nlay, unsigned long int& ntot_enc, double *deps_vec, double *minval_vec, unsigned long int *len_enc_vec, unsigned char *data_enc);
 /* Decoding subroutine with range decoding and inverse wavelet transform*/ 
-void decoding_wrap(int nx, int ny, int nz, double *fld_1d, double& tolabs, double& midval, double& halfspanval, unsigned char& wlev, unsigned char& nlay, unsigned long int& ntot_enc, double *deps_vec, double *minval_vec, unsigned long int *len_enc_vec, unsigned char *data_enc);
-/* Use the range encoder for an array fld_q */ 
-void range_encode(unsigned char *fld_q, unsigned long int ntot, unsigned char *enc_q, unsigned long int& len_out_q);
-/* Decode the range-encoded data */
-void range_decode(unsigned char *enc_q, unsigned long int len_out_q, unsigned char *dec_q, unsigned long int ntot);
-
+extern "C" void decoding_wrap(int nx, int ny, int nz, double *fld_1d, double& tolabs, double& midval, double& halfspanval, unsigned char& wlev, unsigned char& nlay, unsigned long int& ntot_enc, double *deps_vec, double *minval_vec, unsigned long int *len_enc_vec, unsigned char *data_enc);
 
