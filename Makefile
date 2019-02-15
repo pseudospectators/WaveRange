@@ -43,6 +43,7 @@ common:
 clean:
 	cd ./src/waveletcdf97_3d && $(MAKE) clean
 	cd ./src/rangecod && $(MAKE) clean
+	cd ./src/core && $(MAKE) clean
 	$(RM) -rf $(OUTPUTDIR)
 	$(RM) -rf $(AUXDIR)
 	$(RM) ./*.gc??
