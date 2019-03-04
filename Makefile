@@ -2,6 +2,7 @@ include config.mk
 
 OUTPUTDIR = ./bin/
 AUXDIR = ./libc/
+
 MKDIR = mkdir -p  
 
 SRCFLU = src/flusi/hdf5_interfaces.cpp
@@ -32,10 +33,12 @@ generic: common
 	$(CXX) $(CXXFLAGS) ./src/generic/gen_dec.cpp $(OBJGEN) -L$(AUXDIR) -lwaverange -o $(OUTPUTDIR)generic/wrdec
 common:
 	$(MKDIR) $(OUTPUTDIR)
+	$(MKDIR) $(OUTPUTDIR)lib/
 	$(MKDIR) $(AUXDIR)
 	cd ./src/waveletcdf97_3d && $(MAKE) all
 	cd ./src/rangecod && $(MAKE) all
 	cd ./src/core && $(MAKE) all
+	cp $(AUXDIR)libwaverange.a $(OUTPUTDIR)lib/ 
 .PHONY: clean
 clean:
 	cd ./src/waveletcdf97_3d && $(MAKE) clean

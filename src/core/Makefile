@@ -1,13 +1,14 @@
 include ../../config.mk
 
-OUTPUTDIR = ../../libc/
+OUTPUTDIR = ../../bin/
+AUXDIR = ../../libc/
 
 OBJECTC = wrappers.o ../waveletcdf97_3d/waveletcdf97_3d.o ../rangecod/rangecod.o
 CXXSOURCES = wrappers.cpp
 
 ifeq ($(CC),gcc)
   CPICFLAG = -fPIC
-  SODIR = ../../bin/
+  SODIR = $(OUTPUTDIR)lib/
   SHARELIB = gcc -shared -o $(SODIR)libwaverange.so $(OBJECTC)
 else
   CPICFLAG = 
@@ -18,7 +19,7 @@ all: wrappers
 
 wrappers: 
 	$(CXX) $(CXXSOURCES) $(CDNLFLAG) $(CPICFLAG) $(CXXFLAGS) 
-	$(AR) rcs $(OUTPUTDIR)libwaverange.a $(OBJECTC)
+	$(AR) rcs $(AUXDIR)libwaverange.a $(OBJECTC)
 	$(SHARELIB)
 .PHONY: clean
 clean:
