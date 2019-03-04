@@ -11,5 +11,4 @@ all:
 	$(FC) example_fort.f90 $(FFLAGS) -L$(LIBDIR) -lwaverange -lstdc++ -o $(OUTPUTDIR)example_fort
 .PHONY: clean
 clean:
-	$(RM) ./*.gc??
 	$(RM) ./*.o
