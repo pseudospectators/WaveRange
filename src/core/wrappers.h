@@ -29,8 +29,18 @@
     observational “Big Data”).
 */
 
+/* C/C++ interface */
 /* Encoding subroutine with wavelet transform and range coding */ 
 extern "C" void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag, int mx, int my, int mz, double *cutoffvec, double& tolabs, double& midval, double& halfspanval, unsigned char& wlev, unsigned char& nlay, unsigned long int& ntot_enc, double *deps_vec, double *minval_vec, unsigned long int *len_enc_vec, unsigned char *data_enc);
 /* Decoding subroutine with range decoding and inverse wavelet transform*/ 
 extern "C" void decoding_wrap(int nx, int ny, int nz, double *fld_1d, double& tolabs, double& midval, double& halfspanval, unsigned char& wlev, unsigned char& nlay, unsigned long int& ntot_enc, double *deps_vec, double *minval_vec, unsigned long int *len_enc_vec, unsigned char *data_enc);
+/* Return the number of bit planes and the required encoded data array size */ 
+extern "C" void setup_wr(int nx, int ny, int nz, unsigned char& nlaymax, unsigned long int& ntot_enc_max);
 
+/* Fortran interface */
+/* Encoding subroutine with wavelet transform and range coding */ 
+extern "C" void encoding_wrap_f(int *nx, int *ny, int *nz, double *fld, int *wtflag, double *tolrel, double& tolabs, double& midval, double& halfspanval, unsigned char& wlev, unsigned char& nlay, long int& ntot_enc, double *deps_vec, double *minval_vec, long int *len_enc_vec, unsigned char *data_enc);
+/* Decoding subroutine with range decoding and inverse wavelet transform*/ 
+extern "C" void decoding_wrap_f(int *nx, int *ny, int *nz, double *fld, double& midval, double& halfspanval, unsigned char& wlev, unsigned char& nlay, long int& ntot_enc, double *deps_vec, double *minval_vec, long int *len_enc_vec, unsigned char *data_enc);
+/* Return the number of bit planes and the required encoded data array size */ 
+extern "C" void setup_wr_f(int *nx, int *ny, int *nz, int& nlaymax, long int& ntot_enc_max);

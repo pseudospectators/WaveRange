@@ -288,7 +288,7 @@ extern "C" void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag
 
     // Allocate the quantized input and output vectors
     unsigned char *fld_q = new unsigned char[ntot];
-    unsigned char *enc_q = new unsigned char[(SAFETY_BUFFER_FACTOR+1UL)*ntot]; // Encoded array may be longer than the original
+    unsigned char *enc_q = new unsigned char[(SAFETY_BUFFER_FACTOR+1UL)*(ntot<1024UL?1024UL:ntot)]; // Encoded array may be longer than the original
 
     // Output quantized data array length
     unsigned long int len_out_q = 0;
@@ -340,6 +340,9 @@ extern "C" void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag
           deps = tolabs;
           brflag = 1;
         }
+
+        // Termnate if maximum bit plane is reached
+        if (ilay >= NLAYMAX-1U) brflag = 1;
 
         // Save the quantization interval size
         deps_vec[ilay] = deps;
@@ -422,7 +425,7 @@ extern "C" void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag
             data_enc[jtot++] = enc_q[j];
 
             // Check for overflow
-            if (jtot > SAFETY_BUFFER_FACTOR*NLAYMAX*ntot)
+            if (jtot > SAFETY_BUFFER_FACTOR*NLAYMAX*(ntot<1024UL?1024UL:ntot))
               {
                 cout << "Error: encoded array is too large. Use larger SAFETY_BUFFER_FACTOR" << endl;
                 throw std::exception();
@@ -477,7 +480,7 @@ extern "C" void decoding_wrap(int nx, int ny, int nz, double *fld_1d, double& to
 
     // Allocate the quantized input and output vectors
     unsigned char *dec_q = new unsigned char[ntot];
-    unsigned char *enc_q = new unsigned char[(SAFETY_BUFFER_FACTOR+1UL)*ntot]; // Encoded array may be longer than the original
+    unsigned char *enc_q = new unsigned char[(SAFETY_BUFFER_FACTOR+1UL)*(ntot<1024UL?1024UL:ntot)]; // Encoded array may be longer than the original
 
     // Cumulative field
     for(unsigned long int j = 0; j < ntot; j++) fld_1d[j] = 0;
@@ -527,5 +530,72 @@ extern "C" void decoding_wrap(int nx, int ny, int nz, double *fld_1d, double& to
     // Deallocate memory
     delete [] enc_q;
     delete [] dec_q;
+}
+
+
+/* Return the number of bit planes and the required encoded data array size */ 
+extern "C" void setup_wr(int nx, int ny, int nz, unsigned char& nlaymax, unsigned long int& ntot_enc_max)
+{
+    // Number of bit planes
+    nlaymax = NLAYMAX;
+
+    // Total number of elements in the input array
+    unsigned long int ntot = (unsigned long int)(nx)*(unsigned long int)(ny)*(unsigned long int)(nz);
+
+    // Required encoded data array size, for memory allocation
+    ntot_enc_max = SAFETY_BUFFER_FACTOR*NLAYMAX*(ntot<1024UL?1024UL:ntot);
+}
+
+
+/* Fortran interface. Encoding subroutine with wavelet transform and range coding */ 
+extern "C" void encoding_wrap_f(int *nx, int *ny, int *nz, double *fld, int *wtflag, double *tolrel, double& tolabs, double& midval, double& halfspanval, unsigned char& wlev, unsigned char& nlay, long int& ntot_enc_sg, double *deps_vec, double *minval_vec, long int *len_enc_vec_sg, unsigned char *data_enc)
+{
+    // Unsigned long int variables
+    unsigned long int ntot_enc;
+    unsigned long int len_enc_vec[NLAYMAX];
+
+    // Uniform local cutoff tolerance
+    int mx = 1, my = 1, mz = 1;
+    double *cutoffvec = new double[1];
+    cutoffvec[0] = *tolrel;
+
+    // Apply encoding routine
+    encoding_wrap(*nx,*ny,*nz,fld,*wtflag,mx,my,mz,cutoffvec,tolabs,midval,halfspanval,wlev,nlay,ntot_enc,deps_vec,minval_vec,len_enc_vec,data_enc);
+
+    // Standard Fortran does not have an equivalent to unsigned long int, therefore, we copy the values into signed variables hoping that they fit in
+    ntot_enc_sg = (long int)(ntot_enc);
+    for (unsigned char j = 0; j < NLAYMAX; j++) 
+      len_enc_vec_sg[j] = (long int)(len_enc_vec[j]);
+}
+
+
+/* Fortran interface. Decoding subroutine with range decoding and inverse wavelet transform */ 
+extern "C" void decoding_wrap_f(int *nx, int *ny, int *nz, double *fld, double& midval, double& halfspanval, unsigned char& wlev, unsigned char& nlay, long int& ntot_enc_sg, double *deps_vec, double *minval_vec, long int *len_enc_vec_sg, unsigned char *data_enc)
+{
+    // The variable tolabs is not used, but it is required in the C interface for backward compatibility
+    double tolabs = 0;
+
+    // Unsigned long int variables
+    unsigned long int ntot_enc = (unsigned long int)(ntot_enc_sg);
+    unsigned long int len_enc_vec[NLAYMAX];
+    for (unsigned char j = 0; j < NLAYMAX; j++) len_enc_vec[j] = 
+      (unsigned long int)(len_enc_vec_sg[j]);
+
+    // Apply decoding routine
+    decoding_wrap(*nx,*ny,*nz,fld,tolabs,midval,halfspanval,wlev,nlay,ntot_enc,deps_vec,minval_vec,len_enc_vec,data_enc);
+}
+
+
+/* Fortran interface. Return the number of bit planes and the required encoded data array size */ 
+extern "C" void setup_wr_f(int *nx, int *ny, int *nz, int& nlaymax, long int& ntot_enc_max)
+{
+    // Number of bit planes
+    nlaymax = NLAYMAX;
+
+    // Total number of elements in the input array
+    long int ntot = (long int)(*nx)*(long int)(*ny)*(long int)(*nz);
+
+    // Required encoded data array size, for memory allocation
+    ntot_enc_max = SAFETY_BUFFER_FACTOR*NLAYMAX*(ntot<1024L?1024L:ntot);
 }
 

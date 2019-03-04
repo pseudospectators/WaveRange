@@ -431,7 +431,7 @@ void write_field_gen_raw( const char *filename, int nbytes, double *fld, unsigne
     assert(outputfile.is_open());
 
     // 1d loop for all elements of the array
-    for (int j = 0; j < ntot; j++)
+    for (unsigned long int j = 0; j < ntot; j++)
       {
         // Load one element from the data array
         buf = fld[j];
@@ -474,7 +474,7 @@ void read_field_gen_raw( ifstream &inputfile, int nbytes, double *fld, unsigned 
       }
 
     // 1d loop for all elements of the array
-    for (int j = 0; j < ntot; j++)
+    for (unsigned long int j = 0; j < ntot; j++)
       {
         // Read data element from file
         inputfile.read(reinterpret_cast<char*>(temp1), nbytes);

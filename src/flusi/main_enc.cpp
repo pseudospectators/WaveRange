@@ -203,7 +203,7 @@ int main( int argc, char *argv[] )
 
           // Allocate encoded data array (will be stored in a file)
           // Encoded array may be longer than the original
-          unsigned char *data_enc = new unsigned char[SAFETY_BUFFER_FACTOR*NLAYMAX*ntot];
+          unsigned char *data_enc = new unsigned char[SAFETY_BUFFER_FACTOR*NLAYMAX*(ntot<1024UL?1024UL:ntot)];
 
           /* Do encoding */
           // Apply encoding routine
@@ -424,7 +424,7 @@ int main( int argc, char *argv[] )
 
               // Allocate encoded data array (will be stored in a file)
               // Encoded array may be longer than the original
-              unsigned char *data_enc = new unsigned char[SAFETY_BUFFER_FACTOR*NLAYMAX*ntot];
+              unsigned char *data_enc = new unsigned char[SAFETY_BUFFER_FACTOR*NLAYMAX*(ntot<1024UL?1024UL:ntot)];
 
               /* Do encoding */
               // Apply encoding routine
