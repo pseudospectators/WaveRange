@@ -43,7 +43,7 @@ II. COMPILING AND BUILDING
 III. USAGE
 
 1) Copy the executables into the same directory with the data files. Sample compressed data files can be downloaded from <https://osf.io/pz4n8/>. 
-2) If necessary, copy and modify the sample 'inmeta' and 'outmeta' control files that can be found in 'tests/'.
+2) If necessary, copy and modify the sample 'inmeta' and 'outmeta' control files that can be found in 'examples/'.
 3) Run the utility with the parameters read from the control files or use parameter string.
 
    Example: ./wrenc < inmeta; ./wrdec < outmeta

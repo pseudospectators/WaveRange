@@ -12,3 +12,4 @@ all:
 .PHONY: clean
 clean:
 	$(RM) ./*.o
+	$(RM) example_fort
