@@ -107,7 +107,7 @@ int main( int argc, char *argv[] )
     // Interactive mode help string
     cout << "usage: ./wrenc INPUT_FILE ENCODED_FILE HEADER_FILE TYPE ENDIANFLIP NF PRECISION TOLERANCE NX NY NZ\n";
     cout << "where TYPE=(0: Fortran sequential w 4-byte recl; 1: Fortran sequential w 8-byte recl; 2: C/C++),\n";
-    cout << "      ENDIANFLIP=(0:no; 1:yes), NF=(how many fields, e.g. 1), PRECISION=(1:single 2:double),\n";
+    cout << "      ENDIANFLIP=(0:no; 1:yes), NF=(how many fields, e.g. 1), PRECISION=(1:single; 2:double),\n";
     cout << "      NX=(e.g. 16), NY=(e.g. 16), NZ=(e.g. 16) and TOLERANCE=(e.g. 1.0e-16)\n";
     cout << "interactive mode if not enough arguments are passed.\n";
 

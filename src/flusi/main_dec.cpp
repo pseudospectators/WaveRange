@@ -79,7 +79,7 @@ int main( int argc, char *argv[] )
     string bar, bar2;
 
     cout << "usage: ./wrdec compressed_000.h5 decompressed_000.h5 TYPE PRECISION\n";
-    cout << "where TYPE=(0: regular output; 1: backup) and PRECISION=(1:single 2:double)\n";
+    cout << "where TYPE=(0: regular output; 1: backup) and PRECISION=(1:single; 2:double)\n";
     cout << "interactive mode if not enough arguments are passed.\n";
 
     if ( argc == 5 )

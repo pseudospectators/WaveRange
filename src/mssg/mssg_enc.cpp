@@ -98,8 +98,8 @@ int main( int argc, char *argv[] )
     string bar, bar2, bar3, bar4, bar5;
 
     // Interactive mode help string
-    cout << "usage: ./wrmssgenc file_name_prefix encoded_name_ext TYPE PRECISION ENDIANFLIP TOLERANCE PROCID\n";
-    cout << "where TYPE=(0: regular output; 1: backup merged; 2: backup separated), PRECISION=(1:single 2:double), ENDIANFLIP=(0:no 1:yes), TOLERANCE=(e.g. 1.0e-16) and PROCID=(this proc id)\n";
+    cout << "usage: ./wrmssgenc FILE_NAME_PREFIX ENCODED_NAME_EXT TYPE PRECISION ENDIANFLIP TOLERANCE PROCID\n";
+    cout << "where TYPE=(0: regular output; 1: backup united; 2: backup divided), PRECISION=(1:single; 2:double), ENDIANFLIP=(0:no; 1:yes), TOLERANCE=(e.g. 1.0e-16) and PROCID=(this proc id)\n";
     cout << "interactive mode if not enough arguments are passed.\n";
 
     /* Prepare for encoding */

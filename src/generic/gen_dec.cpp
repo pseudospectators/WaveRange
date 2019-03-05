@@ -99,7 +99,7 @@ int main( int argc, char *argv[] )
     for (int j = 0; j < 8; j++) recl[j] = 0;
 
     cout << "usage: ./wrdec ENCODED_FILE HEADER_FILE EXTRACTED_FILE TYPE ENDIANFLIP\n";
-    cout << "where TYPE=(0: Fortran sequential w 4-byte recl; 1: Fortran sequential w 8-byte recl; 2: C/C++) and ENDIANFLIP=(0:no 1:yes)\n";
+    cout << "where TYPE=(0: Fortran sequential w 4-byte recl; 1: Fortran sequential w 8-byte recl; 2: C/C++) and ENDIANFLIP=(0:no; 1:yes)\n";
     cout << "interactive mode if not enough arguments are passed.\n";
 
     /* Prepare for decoding */

@@ -88,7 +88,7 @@ int main( int argc, char *argv[] )
     string bar2;
 
     cout << "usage: ./wrenc original_000.h5 compressed_000.h5 TYPE TOLERANCE\n";
-    cout << "where TYPE=(0: regular output; 1: backup) and TOLERANCE=1.0e-5 etc)\n";
+    cout << "where TYPE=(0: regular output; 1: backup) and TOLERANCE=(1.0e-5 etc)\n";
     cout << "interactive mode if not enough arguments are passed.\n";
 
     if ( argc == 5 )

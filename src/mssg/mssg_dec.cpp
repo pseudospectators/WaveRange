@@ -93,8 +93,8 @@ int main( int argc, char *argv[] )
     string in_prefix_name, ext_name, out_prefix_name, in_name, out_name, header_name, control_name;
     string bar, bar2, bar3, bar4;
 
-    cout << "usage: ./wrmssgdec encoded_name_prefix encoded_name_ext extracted_name_prefix TYPE PRECISION ENDIANFLIP PROCID\n";
-    cout << "where TYPE=(0: regular output; 1: backup merged; 2: backup separated), PRECISION=(1:single 2:double), ENDIANFLIP=(0:no 1:yes) and PROCID=(this proc id)\n";
+    cout << "usage: ./wrmssgdec ENCODED_NAME_PREFIX ENCODED_NAME_EXT EXTRACTED_NAME_PREFIX TYPE PRECISION ENDIANFLIP PROCID\n";
+    cout << "where TYPE=(0: regular output; 1: backup united; 2: backup divided), PRECISION=(1:single; 2:double), ENDIANFLIP=(0:no; 1:yes) and PROCID=(this proc id)\n";
     cout << "interactive mode if not enough arguments are passed.\n";
 
     /* Prepare for decoding */
