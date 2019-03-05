@@ -56,33 +56,45 @@ III. USING WAVERANGE AS A STANDALONE APPLICATION
 
 3) Examples.
 
-   Download compressed FluSI regular output data, reconstruct and compress with 1e-3 tolerance using the command line:
+* Download compressed FluSI regular output data, reconstruct and compress with 1e-3 tolerance using the command line:
 
-   cd examples/flusi;
-   wget https://osf.io/5kcuq/download --output-document=ux_hit.enc.h5;
-   ./wrdec ux_hit.enc.h5 ux_hit.h5 0 2;
-   ./wrenc ux_hit.h5 ux_hit_lr.enc.h5 0 1e-3;
+   cd examples/flusi
 
-   Download compressed FluSI regular output data, reconstruct and compress with 1e-3 tolerance using command files:
+   wget https://osf.io/5kcuq/download --output-document=ux_hit.enc.h5
 
-   wget https://osf.io/5kcuq/download --output-document=ux_hit.enc.h5;
-   ./wrdec < outmeta;
-   ./wrenc < inmeta;
+   ./wrdec ux_hit.enc.h5 ux_hit.h5 0 2
 
-   Generic interface using the command line:
+   ./wrenc ux_hit.h5 ux_hit_lr.enc.h5 0 1e-3
+
+* Download compressed FluSI regular output data, reconstruct and compress with 1e-3 tolerance using command files:
+
+   wget https://osf.io/5kcuq/download --output-document=ux_hit.enc.h5
+
+   ./wrdec < outmeta
+
+   ./wrenc < inmeta
+
+* Generic interface using the command line:
 
    cd examples/generic
-   f95 ...f90 -o generate_in_field;
-   ./generate_in_field;
-   ./wrenc ...;
-   ./wrdec ...;
 
-   Generic interface using command files:
+   f95 ...f90 -o generate_in_field
 
-   cd examples/generic;
-   wget ...;
-   ./wrenc < inmeta;
-   ./wrdec < outmeta;
+   ./generate_in_field
+
+   ./wrenc ...
+
+   ./wrdec ...
+
+* Generic interface using command files:
+
+   cd examples/generic
+
+   wget ...
+
+   ./wrenc < inmeta
+
+   ./wrdec < outmeta
 
 
 IV. USING WAVERANGE AS A LIBRARY
