@@ -176,13 +176,19 @@ NOTE: The compression routines encoding_wrap and encoding_wrap_f overwrite the i
 
 * extern "C" void setup_wr(int nx, int ny, int nz, unsigned char& nlaymax, unsigned long int& ntot_enc_max); // Return number of bit planes and max output data size - call before encoding_wrap
 
-   nlaymax : maximum allowed number of bit planes
+   nx : (INPUT) number of elements of the input 3D field in the first (fastest) direction
 
-   ntot_enc_max : maximum allowed total number of elemens of the encoded array data_enc
+   ny : (INPUT) number of elements of the input 3D field in the second direction
+
+   nz : (INPUT) number of elements of the input 3D field in the third (slowest) direction
+
+   nlaymax : (OUTPUT) maximum allowed number of bit planes
+
+   ntot_enc_max : (OUTPUT) maximum allowed total number of elemens of the encoded array data_enc
 
 2) Fortran interface. For the functional description of all input/output parameters, see the C++ interface comments above. For a working example, see examples/fortran/.
 
-* subroutine encoding_wrap_f(nx,ny,nz,fld,wtflag,tolrel,tolabs,midval,halfspanval,wlev,nlay,ntot_enc,deps_vec,minval_vec,len_enc_vec,data_enc) ! Compression
+* subroutine encoding_wrap_f(nx, ny, nz, fld, wtflag, tolrel, tolabs, midval, halfspanval, wlev, nlay, ntot_enc, deps_vec, minval_vec, len_enc_vec, data_enc) ! Compression
 
    byte :: wlev, nlay ! OUTPUT
 
@@ -202,7 +208,7 @@ NOTE: The compression routines encoding_wrap and encoding_wrap_f overwrite the i
 
    double precision, allocatable :: fld(:,:,:) ! INPUT
 
-* subroutine decoding_wrap_f(nx,ny,nz,fld,midval,halfspanval,wlev,nlay,ntot_enc,deps_vec,minval_vec,len_enc_vec,data_enc) ! Reconstruction
+* subroutine decoding_wrap_f(nx, ny, nz, fld, midval, halfspanval, wlev, nlay, ntot_enc, deps_vec, minval_vec, len_enc_vec, data_enc) ! Reconstruction
 
    byte :: wlev, nlay ! INPUT
 
@@ -220,7 +226,9 @@ NOTE: The compression routines encoding_wrap and encoding_wrap_f overwrite the i
 
    double precision, allocatable :: fld(:,:,:) ! OUTPUT
 
-* subroutine setup_wr_f(nx,ny,nz,nlaymax,ntot_enc_max) ! Return number of bit planes and max output data size - call before encoding_wrap_f
+* subroutine setup_wr_f(nx, ny, nz, nlaymax, ntot_enc_max) ! Return number of bit planes and max output data size - call before encoding_wrap_f
+
+   integer :: nx,ny,nz ! INPUT 
 
    integer :: nlaymax ! OUTPUT
 

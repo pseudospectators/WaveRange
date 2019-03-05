@@ -111,6 +111,9 @@ extern "C" void encoding_wrap_f(int *nx, int *ny, int *nz, double *fld, int *wtf
 extern "C" void decoding_wrap_f(int *nx, int *ny, int *nz, double *fld, double& midval, double& halfspanval, unsigned char& wlev, unsigned char& nlay, long int& ntot_enc, double *deps_vec, double *minval_vec, long int *len_enc_vec, unsigned char *data_enc);
 
 /* Return the number of bit planes and the required encoded data array size, as needed for memory allocation
-    nlaymax : maximum allowed number of bit planes
-    ntot_enc_max : maximum allowed total number of elemens of the encoded array data_enc */ 
+    nx : (INPUT) number of elements of the input 3D field in the first (fastest) direction
+    ny : (INPUT) number of elements of the input 3D field in the second direction
+    nz : (INPUT) number of elements of the input 3D field in the third (slowest) direction
+    nlaymax : (OUTPUT) maximum allowed number of bit planes
+    ntot_enc_max : (OUTPUT) maximum allowed total number of elemens of the encoded array data_enc */ 
 extern "C" void setup_wr_f(int *nx, int *ny, int *nz, int& nlaymax, long int& ntot_enc_max);
