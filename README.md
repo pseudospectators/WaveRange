@@ -327,9 +327,14 @@ V. BRIEF DESCRIPTION OF THE FILES
 * Makefile : make file
 * README.md : this readme file
 * doc/cfdproc2017.pdf : brief theoretical introduction
+* src/core/Makefile : encoding/decoding functions make file
 * src/core/defs.h : constant parameter definitions 
-* src/core/wrappers.cpp : encoding/decoding subroutines including wavelet transforn and range coding
+* src/core/wrappers.cpp : encoding/decoding subroutines including wavelet transform and range coding
 * src/core/wrappers.h : header for wrappers.cpp
+* src/generic/gen_aux.cpp : subroutines for handling generic Fortran/C/C++ compression control files
+* src/generic/gen_aux.h : header for gen_aux.cpp
+* src/generic/gen_dec.cpp : main generic Fortran/C/C++ file decoder program
+* src/generic/gen_enc.cpp : main generic Fortran/C/C++ file encoder program
 * src/flusi/hdf5_interfaces.cpp : subroutine for handling FluSI HDF5 files
 * src/flusi/hdf5_interfaces.h : header for hdf5_interfaces.cpp
 * src/flusi/main_dec.cpp : main FluSI decoder program
@@ -345,19 +350,29 @@ V. BRIEF DESCRIPTION OF THE FILES
 * src/waveletcdf97_3d/Makefile : wavelet transform make file
 * src/waveletcdf97_3d/waveletcdf97_3d.c : wavelet transform subroutines
 * src/waveletcdf97_3d/waveletcdf97_3d.h : header for waveletcdf97_3d.c
-* tests/flusi/all_enc_dec.sh : encode/decode sample bash script for FluSI
-* tests/flusi/inmeta : example FluSI encoder parameter
-* tests/flusi/outmeta : example FluSI decoder parameters
-* tests/flusi/wrdec : symbolic link to WaveRange FluSI decoder executable
-* tests/flusi/wrenc : symbolic link to WaveRange FluSI encoder executable
-* tests/mssg/regout/all_enc_dec.sh : encode/decode sample bash script for MSSG regular output
-* tests/mssg/regout/inmeta : example MSSG regular output encoder parameters
-* tests/mssg/regout/outmeta : example MSSG regular output decoder parameters
-* tests/mssg/regout/wrmssgdec : symbolic link to WaveRange MSSG decoder executable
-* tests/mssg/regout/wrmssgenc : symbolic link to WaveRange MSSG encoder executable
-* tests/mssg/separated/all_enc_dec.sh : encode/decode sample bash script for MSSG divided restart files
-* tests/mssg/separated/wrmssgdec : symbolic link to WaveRange MSSG decoder executable
-* tests/mssg/separated/wrmssgenc : symbolic link to WaveRange MSSG encoder executable
-* tests/mssg/unified/all_enc_dec.sh : encode/decode sample bash script for MSSG united restart files
-* tests/mssg/unified/wrmssgdec : symbolic link to WaveRange MSSG decoder executable
-* tests/mssg/unified/wrmssgenc :symbolic link to WaveRange MSSG encoder executable
+* examples/generic/generic_enc_dec.sh : encode/decode sample bash script for generic Fortran/C/C++ files
+* examples/generic/create_in_field.f90 : Fortran program to generate a sample data file
+* examples/generic/Makefile : make file for create_in_field
+* examples/generic/inmeta : example generic Fortran/C/C++ encoder parameter
+* examples/generic/outmeta : example generic Fortran/C/C++ decoder parameters
+* examples/generic/wrdec : symbolic link to WaveRange generic Fortran/C/C++ decoder executable
+* examples/generic/wrenc : symbolic link to WaveRange generic Fortran/C/C++ encoder executable
+* examples/flusi/flusi_dec_enc.sh : encode/decode sample bash script for FluSI
+* examples/flusi/inmeta : example FluSI encoder parameter
+* examples/flusi/outmeta : example FluSI decoder parameters
+* examples/flusi/wrdec : symbolic link to WaveRange FluSI decoder executable
+* examples/flusi/wrenc : symbolic link to WaveRange FluSI encoder executable
+* examples/mssg/regout/all_enc_dec.sh : encode/decode sample bash script for MSSG regular output
+* examples/mssg/regout/inmeta : example MSSG regular output encoder parameters
+* examples/mssg/regout/outmeta : example MSSG regular output decoder parameters
+* examples/mssg/regout/wrmssgdec : symbolic link to WaveRange MSSG decoder executable
+* examples/mssg/regout/wrmssgenc : symbolic link to WaveRange MSSG encoder executable
+* examples/mssg/divided/all_enc_dec.sh : encode/decode sample bash script for MSSG divided restart files
+* examples/mssg/divided/wrmssgdec : symbolic link to WaveRange MSSG decoder executable
+* examples/mssg/divided/wrmssgenc : symbolic link to WaveRange MSSG encoder executable
+* examples/mssg/united/all_enc_dec.sh : encode/decode sample bash script for MSSG united restart files
+* examples/mssg/united/wrmssgdec : symbolic link to WaveRange MSSG decoder executable
+* examples/mssg/united/wrmssgenc :symbolic link to WaveRange MSSG encoder executable
+* examples/fortran/example_fort.f90 : Fortran example of using WaveRange as a library
+* examples/fortran/Makefile : make file for example_fort
+
