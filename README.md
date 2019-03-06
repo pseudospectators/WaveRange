@@ -58,11 +58,11 @@ III. USING WAVERANGE AS A STANDALONE APPLICATION
 
 * Create a sample Fortran unformatted sequential access binary file 'data.bin' that contains a 32*32*32 double precision array, a 64*64*64 double precision array and 1 single precision variable. Modify 'Makefile' if necessary and type 'make' to build an executable 'create_in_field'. Compress the first array with 1e-6 relative tolerance, the second array with 1e-3 relative tolerance, and leave the last single precision variable uncompressed. Finally, reconstruct the data from the compressed format. This example assumes that the record length is 4 bit. No endian conversion is performed. 
 
-    ./create_in_field
+    $ ./create_in_field
 
-    ./wrenc < inmeta
+    $ ./wrenc < inmeta
 
-    ./wrdec < outmeta
+    $ ./wrdec < outmeta
 
   The contents of the command file inmeta substitute for the following interactive input:
 
