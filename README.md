@@ -96,6 +96,26 @@ III. USING WAVERANGE AS A STANDALONE APPLICATION
 
    ./wrenc < inmeta
 
+  The contents of the sample command file outmeta substitute for the following interactive input:
+
+   Enter compressed data file name []: ux_hit.enc.h5
+
+   Enter reconstructed file name []: ux_hit.h5
+
+   Enter file type (0: regular output; 1: backup) [0]: 0
+
+   Enter output data type (1: float; 2: double) [2]: 2
+
+  The contents of the sample command file inmeta substitute for the following interactive input:
+
+   Enter input file name []: ux_hit.h5
+
+   Enter output file name []: ux_hit_lr.enc.h5
+
+   Enter file type (0: regular output; 1: backup) [0]: 0
+
+   Enter base cutoff relative tolerance [1e-16]: 1e-3
+
 IV. USING WAVERANGE AS A LIBRARY
 
 All compilers will produce a static library file 'bin/lib/libwaverange.a'. A C++ header file 'wrappers.h' containing the encoding and decoding function definitions will be copied to the same directory. In addition, if the C compiler name in 'config.mk' is defined as 'CC = gcc', a shared library 'bin/lib/libwaverange.so' will be generated. To build your application with WaveRange, add '-L$(WAVERANGE_LIBRARY_PATH) -lwaverange -lstdc++' at linkage, see an example in 'examples/fortran/Makefile'. 

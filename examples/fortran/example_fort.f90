@@ -58,7 +58,7 @@ program example_fort
    ! Print a message on startup
    print *, "FORTRAN EXAMPLE: SETTING UP THE PARAMETERS"
    
-   ! Set up the domain size
+   ! Set up the dataset size
    nx = 64
    ny = 64
    nz = 64
