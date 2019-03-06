@@ -37,15 +37,15 @@ II. COMPILING AND BUILDING
 1) Modify the 'config.mk' file. Set the environment variables 'CC' and 'CXX' to point to the desired compilers, set the compiler flags in 'CFLAGS' and 'CXXFLAGS', and the archiver in 'AR'. 
 * HDF5 (<https://www.hdfgroup.org/downloads/hdf5/>) and MPI are required for building the FluSI interface. If compiling with HDF5 support, modify the paths in 'HDF_INC' and 'HDF_LIB' to point to the valid library files. It may be necessary to use mpicxx or h5c++. 
 * If not using HDF5, select a serial compiler and empty 'HDF_INC' and 'HDF_LIB'.
-2) Type 'make' to build the executable files. To only build one of the interfaces, type 'make flusi' or 'make mssg'.
-3) Executables will appear in 'bin/' directory. Its sub-directory 'bin/generic/' will contain the utilities for compressing plain unformatted Fortran or C floating-point output files. 'bin/flusi/' will contain compression and reconstruction utilities for FluSI output data, 'bin/mssg/' will contain similar utilities for MSSG data. The encoder executable file names end with 'enc', the decoder executable file names end with 'dec'. Library files will appear in 'bin/lib/'.
+2) Type 'make' to build the executable files. To only build one of the interfaces, type 'make generic', 'make flusi' or 'make mssg'.
+3) Executables will appear in 'bin/' directory. Its sub-directory 'bin/generic/' will contain the utilities for compressing plain unformatted Fortran or C/C++ floating-point output files. 'bin/flusi/' will contain compression and reconstruction utilities for FluSI output data, 'bin/mssg/' will contain similar utilities for MSSG data. The encoder executable file names end with 'enc', the decoder executable file names end with 'dec'. Library files will appear in 'bin/lib/' and 'bin/include/'.
 
 III. USING WAVERANGE AS A STANDALONE APPLICATION
 
 1) Copy the executables into the same directory with the data files. Sample compressed data files can be downloaded from <https://osf.io/pz4n8/>. 
 2) There are three different ways to let WaveRange know how to compress/reconstruct the data.
-* Interactively using a command line. Run the program ('wrenc', 'wrdec', 'wrmssgenc' or 'wrmssgenc') and follow the command prompt.
-* Using command files. WaveRange is fed with the contents of these command files via the standard input. Sample command files 'inmeta' and 'outmeta' that can be found in 'examples/generic/', 'examples/flusi/' and 'examples/mssg/'.
+* Interactively using a command line. Run the program ('wrenc', 'wrdec', 'wrmssgenc' or 'wrmssgdec') and follow the command prompt.
+* Using command files. The contents of these command files substitute for the standard input. Sample command files 'inmeta' and 'outmeta' can be found in 'examples/generic/', 'examples/flusi/' and 'examples/mssg/'.
 * Using a parameter string. 
 
    The 'generic/' interface accepts the following input parameters in the compression mode: './wrenc INPUT_FILE ENCODED_FILE HEADER_FILE TYPE ENDIANFLIP NF PRECISION TOLERANCE NX NY NZ'; where INPUT_FILE is the input floating point data file name, ENCODED_FILE is the encoded output data and HEADER_FILE is the output header file names, TYPE=(0: Fortran sequential with 4-byte record length; 1: Fortran sequential with 8-byte record length; 2: C/C++), ENDIANFLIP=(convert little endian to big endian and vice-versa, 0:no; 1:yes), NF=(how many fields, e.g. 1), PRECISION=(floating point precision, 1:single; 2:double), NX=(first dimension, e.g. 16), NY=(second dimension, e.g. 16), NZ=(third dimension, e.g. 16) and TOLERANCE=(relative tolerance, e.g. 1.0e-16). It accepts the following parameters in the reconstruction mode: './wrdec ENCODED_FILE HEADER_FILE EXTRACTED_FILE TYPE ENDIANFLIP'; where ENCODED_FILE and HEADER_FILE are the input compressed data and header file names, EXTRACTED_FILE is the extracted output file name, TYPE=(0: Fortran sequential with 4-byte record length; 1: Fortran sequential with 8-byte record length; 2: C/C++) and ENDIANFLIP=(convert little endian to big endian and vice-versa, 0:no; 1:yes). 
@@ -286,7 +286,7 @@ NOTE: The compression routines 'encoding_wrap' and 'encoding_wrap_f' overwrite t
 
    integer*8, allocatable :: len_enc_vec(:) ! OUTPUT
 
-   double precision :: tolrel ! INPUT
+   double precision :: tolrel ! INPUT - relative global tolerance
 
    double precision :: midval,halfspanval,tolabs ! OUTPUT
 
