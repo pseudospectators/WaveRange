@@ -375,4 +375,5 @@ V. BRIEF DESCRIPTION OF THE FILES
 * examples/mssg/united/wrmssgenc :symbolic link to WaveRange MSSG encoder executable
 * examples/fortran/example_fort.f90 : Fortran example of using WaveRange as a library
 * examples/fortran/Makefile : make file for example_fort
+* examples/fortran/libwaverange.so : symbolic link to WaveRange shared library
 
