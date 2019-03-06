@@ -58,6 +58,8 @@ III. USING WAVERANGE AS A STANDALONE APPLICATION
 
 * Create a sample Fortran unformatted sequential access binary file 'data.bin' that contains a 32*32*32 double precision array, a 64*64*64 double precision array and 1 single precision variable. Modify 'Makefile' if necessary and type 'make' to build an executable 'create_in_field'. Compress the first array with 1e-6 relative tolerance, the second array with 1e-3 relative tolerance, and leave the last single precision variable uncompressed. Finally, reconstruct the data from the compressed format. This example assumes that the record length is 4 bit. No endian conversion is performed. 
 
+    $ cd examples/generic
+
     $ ./create_in_field
 
     $ ./wrenc < inmeta
@@ -144,21 +146,21 @@ III. USING WAVERANGE AS A STANDALONE APPLICATION
 
 * Download compressed FluSI regular output data in HDF5 format, reconstruct and compress with 1e-3 tolerance using the command line.
 
-   cd examples/flusi
+     $ cd examples/flusi
 
-   wget https://osf.io/5kcuq/download --output-document=ux_hit.enc.h5
+     $ wget https://osf.io/5kcuq/download --output-document=ux_hit.enc.h5
 
-   ./wrdec ux_hit.enc.h5 ux_hit.h5 0 2
+     $ ./wrdec ux_hit.enc.h5 ux_hit.h5 0 2
 
-   ./wrenc ux_hit.h5 ux_hit_lr.enc.h5 0 1e-3
+     $ ./wrenc ux_hit.h5 ux_hit_lr.enc.h5 0 1e-3
 
 * Download compressed FluSI regular output data in HDF5 format, reconstruct and compress with 1e-3 tolerance using command files.
 
-   wget https://osf.io/5kcuq/download --output-document=ux_hit.enc.h5
+     $ wget https://osf.io/5kcuq/download --output-document=ux_hit.enc.h5
 
-   ./wrdec < outmeta
+     $ ./wrdec < outmeta
 
-   ./wrenc < inmeta
+     $ ./wrenc < inmeta
 
   The contents of the sample command file outmeta substitute for the following interactive input:
 
