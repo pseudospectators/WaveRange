@@ -45,7 +45,7 @@
 using namespace std;
 
 
-/* Write a field to an unformatted fortran binary file */
+/* Write a field to an unformatted Fortran binary file */
 void write_field_gen( const char *filename, int idset, int ifiletype, int flag_convertendian, int nbytes, unsigned char *recl, int nx, int ny, int nz, int nh, int idinv, double *fld )
 {
     // I/O variable declarations

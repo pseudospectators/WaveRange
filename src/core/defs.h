@@ -31,7 +31,7 @@
 
 /***** Constant parameters *****/
 /* Version of the coder. Format: XYYZZ, where X is MSSG coder ver., YY is FluSI coder ver., ZZ is other */
-#define CODER_VERSION 31401
+#define CODER_VERSION 31402
 /* Range coder block size. Must be less than 1<<16 */
 #define BLOCKSIZE 60000
 /* Maximum number of bit planes is 8 for 64-bit real type */

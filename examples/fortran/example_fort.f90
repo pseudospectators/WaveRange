@@ -34,7 +34,7 @@ program example_fort
    ! This program is an example of calling WaveRange encoder and decoder 
    ! functions from a Fortran program. The original floating-point data
    ! are contained in a 3D array fld_ini(1:nx,1:ny,1:nz).
-   ! After compression using encoding_wrap_f, all necessay information for 
+   ! After compression using encoding_wrap_f, all necessary information for 
    ! reconstruction is stored in the following variables: nx, ny, nz,   
    ! midval, halfspanval, wlev, nlay, ntot_enc, deps_vec(1:nlaymax), 
    ! minval_vec(1:nlaymax), len_enc_vec(1:nlaymax), data_enc(1:ntot_enc_max),
@@ -110,7 +110,7 @@ program example_fort
 
    ! ... add I/O statements here ...
 
-   ! Print a message on reconstrucion
+   ! Print a message on reconstruction
    print *, "FORTRAN EXAMPLE: RECONSTRUCTING"
 
    ! Reconstruct the 3D field from the compressed format. Here, the input is:
