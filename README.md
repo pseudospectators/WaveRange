@@ -44,7 +44,7 @@ III. USING WAVERANGE AS A STANDALONE APPLICATION
 
 1) Copy the executables into the same directory with the data files. Sample compressed data files can be downloaded from <https://osf.io/pz4n8/>. 
 2) There are three different ways to let WaveRange know how to compress/reconstruct the data.
-* Interactively using a command line. Run the program (wrenc, wrdec, wrmssgenc or wrmssgenc) and follow the command prompt.
+* Interactively using a command line. Run the program ('wrenc', 'wrdec', 'wrmssgenc' or 'wrmssgenc') and follow the command prompt.
 * Using command files. WaveRange is fed with the contents of these command files via the standard input. Sample command files 'inmeta' and 'outmeta' that can be found in 'examples/generic/', 'examples/flusi/' and 'examples/mssg/'.
 * Using a parameter string. 
 
@@ -66,7 +66,7 @@ III. USING WAVERANGE AS A STANDALONE APPLICATION
 
     $ ./wrdec < outmeta
 
-  The contents of the command file inmeta substitute for the following interactive input:
+  The contents of the command file 'inmeta' substitute for the following interactive input:
 
    Enter input data file name [data.bin]: data.bin
 
@@ -132,7 +132,7 @@ III. USING WAVERANGE AS A STANDALONE APPLICATION
 
    Enter compression flag (0: do not compress; 1: compress) [1]: 0
 
-  The contents of the command file outmeta substitute for the following interactive input:
+  The contents of the command file 'outmeta' substitute for the following interactive input:
 
    Enter encoded data file name [data.wrb]: data.wrb
 
@@ -162,7 +162,7 @@ III. USING WAVERANGE AS A STANDALONE APPLICATION
 
      $ ./wrenc < inmeta
 
-  The contents of the sample command file outmeta substitute for the following interactive input:
+  The contents of the sample command file 'outmeta' substitute for the following interactive input:
 
    Enter compressed data file name []: ux_hit.enc.h5
 
@@ -172,7 +172,7 @@ III. USING WAVERANGE AS A STANDALONE APPLICATION
 
    Enter output data type (1: float; 2: double) [2]: 2
 
-  The contents of the sample command file inmeta substitute for the following interactive input:
+  The contents of the sample command file 'inmeta' substitute for the following interactive input:
 
    Enter input file name []: ux_hit.h5
 
@@ -184,7 +184,7 @@ III. USING WAVERANGE AS A STANDALONE APPLICATION
 
 IV. USING WAVERANGE AS A LIBRARY
 
-All compilers will produce a static library file 'bin/lib/libwaverange.a'. A C++ header file 'wrappers.h' containing the encoding and decoding function definitions will be copied to the same directory. In addition, if the C compiler name in 'config.mk' is defined as 'CC = gcc', a shared library 'bin/lib/libwaverange.so' will be generated. To build your application with WaveRange, add '-L$(WAVERANGE_LIBRARY_PATH) -lwaverange -lstdc++' at linkage, see an example in 'examples/fortran/Makefile'. 
+All compilers will produce a static library file 'bin/lib/libwaverange.a'. A C++ header file 'wrappers.h' containing the encoding and decoding function definitions will be copied to 'bin/include/'. In addition, if the C compiler name in 'config.mk' is defined as 'CC = gcc', a shared library 'bin/lib/libwaverange.so' will be generated. To build your application with WaveRange, add '-L$(WAVERANGE_LIBRARY_PATH) -lwaverange -lstdc++' at linkage, see an example in 'examples/fortran/Makefile'. 
 
 NOTE: The compression routines 'encoding_wrap' and 'encoding_wrap_f' overwrite the input floating-point array with temporary data.
 
@@ -220,7 +220,7 @@ NOTE: The compression routines 'encoding_wrap' and 'encoding_wrap_f' overwrite t
 
    nlay : (OUTPUT) number of bit planes
 
-   ntot_enc : (OUTPUT) total number of elemens of the encoded array data_enc
+   ntot_enc : (OUTPUT) total number of elements of the encoded array data_enc
 
    deps_vec : (OUTPUT) quantization step size vector, double deps_vec[nlaymax]; where nlaymax is an output of setup_wr
 
@@ -250,7 +250,7 @@ NOTE: The compression routines 'encoding_wrap' and 'encoding_wrap_f' overwrite t
 
    nlay : (INPUT) number of bit planes
 
-   ntot_enc : (INPUT) total number of elemens of the encoded array data_enc
+   ntot_enc : (INPUT) total number of elements of the encoded array data_enc
 
    deps_vec : (INPUT) quantization step size vector, double deps_vec[nlay];
 
@@ -270,7 +270,7 @@ NOTE: The compression routines 'encoding_wrap' and 'encoding_wrap_f' overwrite t
 
    nlaymax : (OUTPUT) maximum allowed number of bit planes
 
-   ntot_enc_max : (OUTPUT) maximum allowed total number of elemens of the encoded array data_enc
+   ntot_enc_max : (OUTPUT) maximum allowed total number of elements of the encoded array data_enc
 
 2) Fortran interface. For the functional description of all input/output parameters, see the C++ interface comments above. For a working example, see examples/fortran/.
 

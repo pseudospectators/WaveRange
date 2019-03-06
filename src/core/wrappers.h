@@ -45,7 +45,7 @@
     halfspanval : (OUTPUT) half-span, halfspanval = (maxval-minval)/2
     wlev : (OUTPUT) number of wavelet transform levels
     nlay : (OUTPUT) number of bit planes
-    ntot_enc : (OUTPUT) total number of elemens of the encoded array data_enc
+    ntot_enc : (OUTPUT) total number of elements of the encoded array data_enc
     deps_vec : (OUTPUT) quantization step size vector, double deps_vec[nlaymax]; where nlaymax is an output of setup_wr
     minval_vec : (OUTPUT) bit plane offset vector, double minval_vec[nlaymax];
     len_enc_vec : (OUTPUT) number of elements in the encoded bit planes, unsigned long int len_enc_vec[nlaymax];
@@ -62,7 +62,7 @@ extern "C" void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag
     halfspanval : (INPUT) half-span, halfspanval = (maxval-minval)/2
     wlev : (INPUT) number of wavelet transform levels
     nlay : (INPUT) number of bit planes
-    ntot_enc : (INPUT) total number of elemens of the encoded array data_enc
+    ntot_enc : (INPUT) total number of elements of the encoded array data_enc
     deps_vec : (INPUT) quantization step size vector, double deps_vec[nlay];
     minval_vec : (INPUT) bit plane offset vector, double minval_vec[nlay];
     len_enc_vec : (INPUT) number of elements in the encoded bit planes, unsigned long int len_enc_vec[nlay];
@@ -71,7 +71,7 @@ extern "C" void decoding_wrap(int nx, int ny, int nz, double *fld_1d, double& to
 
 /* Return the number of bit planes and the required encoded data array size, as needed for memory allocation
     nlaymax : maximum allowed number of bit planes
-    ntot_enc_max : maximum allowed total number of elemens of the encoded array data_enc */ 
+    ntot_enc_max : maximum allowed total number of elements of the encoded array data_enc */ 
 extern "C" void setup_wr(int nx, int ny, int nz, unsigned char& nlaymax, unsigned long int& ntot_enc_max);
 
 /* Fortran interface */
@@ -87,7 +87,7 @@ extern "C" void setup_wr(int nx, int ny, int nz, unsigned char& nlaymax, unsigne
     halfspanval : (OUTPUT) half-span, halfspanval = (maxval-minval)/2
     wlev : (OUTPUT) number of wavelet transform levels
     nlay : (OUTPUT) number of bit planes
-    ntot_enc : (OUTPUT) total number of elemens of the encoded array data_enc
+    ntot_enc : (OUTPUT) total number of elements of the encoded array data_enc
     deps_vec : (OUTPUT) quantization step size vector
     minval_vec : (OUTPUT) bit plane offset vector
     len_enc_vec : (OUTPUT) number of elements in the encoded bit planes
@@ -103,7 +103,7 @@ extern "C" void encoding_wrap_f(int *nx, int *ny, int *nz, double *fld, int *wtf
     halfspanval : (INPUT) half-span, halfspanval = (maxval-minval)/2
     wlev : (INPUT) number of wavelet transform levels
     nlay : (INPUT) number of bit planes
-    ntot_enc : (INPUT) total number of elemens of the encoded array data_enc
+    ntot_enc : (INPUT) total number of elements of the encoded array data_enc
     deps_vec : (INPUT) quantization step size vector
     minval_vec : (INPUT) bit plane offset vector
     len_enc_vec : (INPUT) number of elements in the encoded bit planes
@@ -115,5 +115,5 @@ extern "C" void decoding_wrap_f(int *nx, int *ny, int *nz, double *fld, double& 
     ny : (INPUT) number of elements of the input 3D field in the second direction
     nz : (INPUT) number of elements of the input 3D field in the third (slowest) direction
     nlaymax : (OUTPUT) maximum allowed number of bit planes
-    ntot_enc_max : (OUTPUT) maximum allowed total number of elemens of the encoded array data_enc */ 
+    ntot_enc_max : (OUTPUT) maximum allowed total number of elements of the encoded array data_enc */ 
 extern "C" void setup_wr_f(int *nx, int *ny, int *nz, int& nlaymax, long int& ntot_enc_max);
