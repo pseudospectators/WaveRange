@@ -398,7 +398,7 @@ void read_field_mssg( const char *filename, int flag_convertendian, int nbytes, 
     assert(inputfile.is_open());
 
     // Skip preceding datasets 
-    long btpos = idset*nz*(iyst+nyloc)*(ixst+nxloc)*nbytes;
+    long btpos = (long)(idset)*(long)(nz)*(long)(nyloc)*(long)(nxloc)*(long)(nbytes);
     inputfile.seekg(btpos);
 
     // Read in fortran order
