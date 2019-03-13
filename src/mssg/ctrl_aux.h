@@ -32,7 +32,7 @@
 /* Read restart control file */
 void read_control_file( const char *filename, int &nx, int &ny, int &nz, int &nprocx, int &nprocy, char dsettab[NDSMAX][256], int &ndset );
 /* Read regular output control file */
-void read_control_file_grads( const char *filename, int &nx, int &ny, int &nz, int &nt, char *dsetname );
+void read_control_file_grads( const char *filename, int &nx, int &ny, int &nz, int &nt, double &undef, char *dsetname );
 /* Write a field to an unformatted fortran binary file */
 void write_field_mssg( const char *filename, int flag_convertendian, int nbytes, int idset, int nx, int ny, int nz, int nxloc, int nyloc, int ixst, int iyst, double *fld );
 /* Read a field from an unformatted fortran binary file */

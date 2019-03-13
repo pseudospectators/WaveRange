@@ -74,6 +74,9 @@ int main( int argc, char *argv[] )
     // Floating point input file precision (4: single; 8: double)
     int nbytes;
 
+    // Masking parameter value
+    double undef;
+
     // More variable declarations
     double *fld_1d_rec;
     double *mask_1d_rec;
@@ -159,11 +162,11 @@ int main( int argc, char *argv[] )
 
           // Read control file
           control_name = in_prefix_name + ".ctl";
-          read_control_file_grads(control_name.c_str(),nx,ny,nz,nt,dsetname);
+          read_control_file_grads(control_name.c_str(),nx,ny,nz,nt,undef,dsetname);
 
           // Print out the control file data
           cout << endl << "=== Parameters read from control file ===" << endl;
-          cout << " dset=" << dsetname << " nx=" << nx  << " ny=" << ny  << " nz=" << nz << " nt=" << nt << endl;
+          cout << " dset=" << dsetname << " nx=" << nx  << " ny=" << ny  << " nz=" << nz << " nt=" << nt << " undef=" << undef << endl;
 
           // Size of the dataset
           ntot = (unsigned long int)(nx)*(unsigned long int)(ny)*(unsigned long int)(nz);
@@ -258,10 +261,10 @@ int main( int argc, char *argv[] )
                       // Reconstruct binary mask
                       mask_midval = midval;
                       for(unsigned long int j1 = 0; j1 < ntot; j1++)
-                          if (mask_1d_rec[j1] < midval) mask_1d_rec[j1] = midval-halfspanval; else mask_1d_rec[j1] = 0;
+                          if (mask_1d_rec[j1] < midval) mask_1d_rec[j1] = undef; else mask_1d_rec[j1] = 0;
 
                       // Echo min and max
-                      cout << "        min=" << midval-halfspanval << " max=" << 0 << endl;
+                      cout << "        min=" << undef << " max=" << 0 << endl;
 
                       // Deallocate memory
                       delete [] data_enc;

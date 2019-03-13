@@ -56,5 +56,5 @@
 #define MSSG_TIME_REC_LEN 15
 /* Relative tolerance of mask (indicator) function compression */
 #define MSSG_MASK_TOLREL 0.126
-/* Mask (indicator) function threshold value */
-#define MSSG_MASK_THRESHOLD -1e-20
+/* Mask (indicator) function threshold relative accuracy value */
+#define MSSG_MASK_THRESHOLD_ACC 1e-4

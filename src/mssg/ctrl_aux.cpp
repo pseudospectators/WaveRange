@@ -196,7 +196,7 @@ void read_control_file( const char *filename, int &nx, int &ny, int &nz, int &np
 
 
 /* Read control file for regular output in GRADS format */
-void read_control_file_grads( const char *filename, int &nx, int &ny, int &nz, int &nt, char *dsetname )
+void read_control_file_grads( const char *filename, int &nx, int &ny, int &nz, int &nt, double &undef, char *dsetname )
 {
     const int szpar = 50;
     int ipar, npar = 0, pos = 0, state = 1;
@@ -233,6 +233,7 @@ void read_control_file_grads( const char *filename, int &nx, int &ny, int &nz, i
                   {
                     // List of relevant parameter names
                     if ( (strcmp(str,"DSET") == 0) ||
+                         (strcmp(str,"UNDEF") == 0) ||
                          (strcmp(str,"XDEF") == 0) ||
                          (strcmp(str,"YDEF") == 0) ||
                          (strcmp(str,"ZDEF") == 0) || 
@@ -278,6 +279,9 @@ void read_control_file_grads( const char *filename, int &nx, int &ny, int &nz, i
     // DSET (=dsetname)
     for (ipar = 0; ipar < npar; ipar++)
       if (strcmp(partab[ipar],"DSET") == 0) strcpy(dsetname,valtab[ipar]);    
+    // UNDEF (=undef)
+    for (ipar = 0; ipar < npar; ipar++)
+      if (strcmp(partab[ipar],"UNDEF") == 0) undef = atof(valtab[ipar]);
     // XDEF (=nx)
     for (ipar = 0; ipar < npar; ipar++)
       if (strcmp(partab[ipar],"XDEF") == 0) nx = atoi(valtab[ipar]);

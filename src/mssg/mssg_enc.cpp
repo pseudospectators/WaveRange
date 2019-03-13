@@ -76,6 +76,9 @@ int main( int argc, char *argv[] )
     // Floating point input file precision (4: single; 8: double)
     int nbytes;
 
+    // Masking parameter value
+    double undef;
+
     // Local cutoff tolerance parameters
     int mx, my, mz;
     unsigned int mtot;
@@ -165,7 +168,7 @@ int main( int argc, char *argv[] )
 
           // Read control file
           control_name = prefix_name + ".ctl";
-          read_control_file_grads(control_name.c_str(),nx,ny,nz,nt,dsetname);
+          read_control_file_grads(control_name.c_str(),nx,ny,nz,nt,undef,dsetname);
 
           // Size of the dataset
           ntot = (unsigned long int)(nx)*(unsigned long int)(ny)*(unsigned long int)(nz);
@@ -179,7 +182,7 @@ int main( int argc, char *argv[] )
           cutoffvec[0] = tol_base;
 
           // Diagnostics
-          cout << " dset=" << dsetname << " nx=" << nx  << " ny=" << ny << " nz=" << nz << " nt=" << nt << endl;
+          cout << " dset=" << dsetname << " nx=" << nx  << " ny=" << ny << " nz=" << nz << " nt=" << nt << " undef=" << undef << endl;
 
           // Output file names
           header_name = prefix_name + "_h"+ ext_name;
@@ -231,13 +234,14 @@ int main( int argc, char *argv[] )
               cout << "        min=" << minval << " max=" << maxval << endl;
 
               // Detect masking and encode it
-              if (minval < MSSG_MASK_THRESHOLD) 
+              double undef_thresh = undef+abs(undef)*MSSG_MASK_THRESHOLD_ACC; // This is slightly larger than the mask indicator value
+              if (minval < undef_thresh) 
                 {
                   // Compute the mean value used for padding
                   double fld_pad = 0;
                   int jmean = 0;
                   for(unsigned long int j1 = 0; j1 < ntot; j1++)
-                    if (fld_1d[j1] >= MSSG_MASK_THRESHOLD) 
+                    if (fld_1d[j1] >= undef_thresh) 
                       {
                         fld_pad += fld_1d[j1];
                         jmean++;
@@ -249,7 +253,7 @@ int main( int argc, char *argv[] )
 
                   // Separate the mask and the field
                   for(unsigned long int j1 = 0; j1 < ntot; j1++)
-                    if (fld_1d[j1] < MSSG_MASK_THRESHOLD) 
+                    if (fld_1d[j1] < undef_thresh) 
                       {
                         fld_1d[j1] = fld_pad;
                         mask_1d[j1] = minval;
