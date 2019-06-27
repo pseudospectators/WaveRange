@@ -66,7 +66,7 @@ int main( int argc, char *argv[] )
     int nh = 1;
     int nzh = 16;
 
-    // Base tolerance, applied as relative to max(abs(fld_1d))
+    // Base tolerance, applied as relative to max(fabs(fld_1d))
     double tol_base = 1e-16;
 
     // Floating point input file endian conversion flag (0: do not convert; 1: convert)
