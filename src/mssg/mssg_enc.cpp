@@ -234,7 +234,7 @@ int main( int argc, char *argv[] )
               cout << "        min=" << minval << " max=" << maxval << endl;
 
               // Detect masking and encode it
-              double undef_thresh = undef+abs(undef)*MSSG_MASK_THRESHOLD_ACC; // This is slightly larger than the mask indicator value
+              double undef_thresh = undef+fabs(undef)*MSSG_MASK_THRESHOLD_ACC; // This is slightly larger than the mask indicator value
               if (minval < undef_thresh) 
                 {
                   // Compute the mean value used for padding
