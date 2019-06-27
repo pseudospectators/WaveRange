@@ -57,7 +57,7 @@ int main( int argc, char *argv[] )
     int nz = 0;
     unsigned long int ntot = 0;
 
-    // Base tolerance, applied as relative to max(abs(fld_1d))
+    // Base tolerance, applied as relative to max(fabs(fld_1d))
     double tol_base = 1e-16;
 
     // Local cutoff tolerance parameters
