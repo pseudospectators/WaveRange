@@ -27,7 +27,7 @@ CXXFLAGS = -Wall -O2 -ftree-vectorize -D__STDC_LIMIT_MACROS -march=native
 # C compiler flags
 #CFLAGS = -Xa
 #CFLAGS = -Caopt -Xa
-CFLAGS = -Wall -O2 -DUSE_RESTRICT -ftree-vectorize -fomit-frame-pointer -funroll-loops -march=native
+CFLAGS = -Wall -O2 -ftree-vectorize -fomit-frame-pointer -funroll-loops -march=native
 
 # HDF path (optional)
 HDF_INC = $(HDF_ROOT)/include/

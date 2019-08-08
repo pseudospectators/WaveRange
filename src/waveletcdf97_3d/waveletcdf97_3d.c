@@ -35,7 +35,7 @@
 #include "waveletcdf97_3d.h"
 
 /* Three-dimensional wavelet transform using CDF9/7 wavelets */
-void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double * restrict X)
+void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X)
 {
   // Lifting filter coefficients
   static const double lfc[4] = {-1.5861343420693648, -0.0529801185718856, 0.8829110755411875, 0.4435068520511142};
@@ -49,7 +49,7 @@ void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double * restrict 
   unsigned long int i1, i2, i3, i, M1, M2, M3, M, N, Q;
 
   // Temporary vectors
-  double * restrict V, * restrict V0, * restrict V1;
+  double *V, *V0, *V1;
 
   // Extrapolation coefficients for odd-sized arrays
   double ext[3];
