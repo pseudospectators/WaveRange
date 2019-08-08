@@ -88,7 +88,7 @@ int main( int argc, char *argv[] )
     string bar2;
 
     cout << "usage: ./wrenc original_000.h5 compressed_000.h5 TYPE TOLERANCE\n";
-    cout << "where TYPE=(0: regular output; 1: backup) and TOLERANCE=(1.0e-5 etc)\n";
+    cout << "where TYPE=(0: regular output; 1: backup) and TOLERANCE=(e.g. 1.0e-5)\n";
     cout << "interactive mode if not enough arguments are passed.\n";
 
     if ( argc == 5 )
@@ -190,15 +190,15 @@ int main( int argc, char *argv[] )
           cout << "  read: fld_1d[0]=" << fld_1d[0] << " fld_1d[last]=" << fld_1d[ntot-1UL] << endl;
 
           // Calculate min and max
-          double maxval = fld_1d[0];
           double minval = fld_1d[0];
+          double maxval = fld_1d[0];
           for(unsigned long int j1 = 0; j1 < ntot; j1++)
             {
-              if (fld_1d[j1] < minval) minval = fld_1d[j1];
-              if (fld_1d[j1] > maxval) maxval = fld_1d[j1];
+              minval = fmin(minval,fld_1d[j1]);
+              maxval = fmax(maxval,fld_1d[j1]);
             }
 
-          // Print min and max
+	  // Print min and max
           cout << "        min=" << minval << " max=" << maxval << endl;
 
           // Allocate encoded data array (will be stored in a file)
@@ -411,12 +411,12 @@ int main( int argc, char *argv[] )
               cout << "  read: fld_1d[0]=" << fld_1d[0] << " fld_1d[last]=" << fld_1d[ntot-1UL] << endl;
 
               // Calculate min and max
-              double maxval = fld_1d[0];
               double minval = fld_1d[0];
+              double maxval = fld_1d[0];
               for(unsigned long int j1 = 0; j1 < ntot; j1++)
                 {
-                  if (fld_1d[j1] < minval) minval = fld_1d[j1];
-                  if (fld_1d[j1] > maxval) maxval = fld_1d[j1];
+                  minval = fmin(minval,fld_1d[j1]);
+                  maxval = fmax(maxval,fld_1d[j1]);
                 }
 
               // Print min and max

@@ -22,12 +22,12 @@ CDNLFLAG = -c
 # Production C++ flags
 #CXXFLAGS = -Xp -Kexceptions
 #CXXFLAGS = -Caopt -Xp -Kexceptions
-CXXFLAGS = -Wall -D__STDC_LIMIT_MACROS
+CXXFLAGS = -Wall -O3 -D__STDC_LIMIT_MACROS -mavx2
 
 # C compiler flags
 #CFLAGS = -Xa
 #CFLAGS = -Caopt -Xa
-CFLAGS = -Wall -O3 -fomit-frame-pointer -funroll-loops
+CFLAGS = -Wall -O3 -fomit-frame-pointer -funroll-loops -mavx2
 
 # HDF path (optional)
 HDF_INC = $(HDF_ROOT)/include/

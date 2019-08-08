@@ -192,12 +192,12 @@ int main( int argc, char *argv[] )
           cout << "  decode: fld_1d_rec[0]=" << fld_1d_rec[0] << " fld_1d_rec[last]=" << fld_1d_rec[ntot-1UL] << endl;
 
           // Calculate min and max
-          double maxval = fld_1d_rec[0];
           double minval = fld_1d_rec[0];
+          double maxval = fld_1d_rec[0];
           for(unsigned long int j1 = 0; j1 < ntot; j1++)
             {
-              if (fld_1d_rec[j1] < minval) minval = fld_1d_rec[j1];
-              if (fld_1d_rec[j1] > maxval) maxval = fld_1d_rec[j1];
+              minval = fmin(minval,fld_1d_rec[j1]);
+              maxval = fmax(maxval,fld_1d_rec[j1]);
             }
 
           // Print min and max
@@ -291,12 +291,12 @@ int main( int argc, char *argv[] )
               cout << "  decode: fld_1d_rec[0]=" << fld_1d_rec[0] << " fld_1d_rec[last]=" << fld_1d_rec[ntot-1UL] << endl;
 
               // Calculate min and max
-              double maxval = fld_1d_rec[0];
               double minval = fld_1d_rec[0];
+              double maxval = fld_1d_rec[0];
               for(unsigned long int j1 = 0; j1 < ntot; j1++)
                 {
-                  if (fld_1d_rec[j1] < minval) minval = fld_1d_rec[j1];
-                  if (fld_1d_rec[j1] > maxval) maxval = fld_1d_rec[j1];
+                  minval = fmin(minval,fld_1d_rec[j1]);
+                  maxval = fmax(maxval,fld_1d_rec[j1]);
                 }
 
               // Echo min and max

@@ -253,11 +253,10 @@ extern "C" void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag
     // Find the minimum and maximum values
     double minval = fld_1d[0];
     double maxval = fld_1d[0];
-    for (unsigned long int j = 0; j < ntot; j++)
+    for (unsigned long int j = 0; j < ntot; j++) 
       {
-        double fld1_tmp = fld_1d[j];
-        if (fld1_tmp < minval) minval = fld1_tmp;
-        if (fld1_tmp > maxval) maxval = fld1_tmp;
+        minval = fmin(minval,fld_1d[j]);
+        maxval = fmax(maxval,fld_1d[j]);
       }
 
     // Find the middle value and the half-span of the data values
@@ -316,14 +315,13 @@ extern "C" void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag
     while (1)
     {
         // Calculate min and max
-        maxval = fld_1d[0];
         minval = fld_1d[0];
-        for(unsigned long int j = 1; j < ntot; j++)
-          {     
-                double fld1_tmp = fld_1d[j];
-                if (fld1_tmp < minval) minval = fld1_tmp;
-                if (fld1_tmp > maxval) maxval = fld1_tmp;
-          }
+        maxval = fld_1d[0];
+        for(unsigned long int j = 1; j < ntot; j++) 
+          {
+            minval = fmin(minval,fld_1d[j]);
+      	    maxval = fmax(maxval,fld_1d[j]);
+	  }
 
         // Store the minimum value
         minval_vec[ilay] = minval;
