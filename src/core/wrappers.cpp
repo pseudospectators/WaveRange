@@ -320,8 +320,8 @@ extern "C" void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag
         for(unsigned long int j = 1; j < ntot; j++) 
           {
             minval = fmin(minval,fld_1d[j]);
-      	    maxval = fmax(maxval,fld_1d[j]);
-	  }
+            maxval = fmax(maxval,fld_1d[j]);
+          }
 
         // Store the minimum value
         minval_vec[ilay] = minval;
@@ -344,6 +344,10 @@ extern "C" void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag
 
         // Save the quantization interval size
         deps_vec[ilay] = deps;
+
+        // Combinations of minval and deps, for optimization
+        double aopt = 1.0/deps;
+        double bopt = -minval*aopt+0.5;
 
         // Two branches depending on the local precision mask activated or not
         if (mtot > 1)
@@ -378,7 +382,9 @@ extern "C" void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag
               else 
                 { 
                   // Set to a value between 0 and 256 if the full range is greater than the local precision
-                  fld_q[jw] = round( ( fld_1d[jw] - minval ) / deps );
+                  double fq = aopt * fld_1d[jw] + bopt; // fld_1d[jp]-minval is always >= 0
+                  fld_q[jw] = fq;
+                  // fld_q[jw] = round( ( fld_1d[jw] - minval ) / deps ); // Before optimization
                 }
             }
           }
@@ -389,7 +395,9 @@ extern "C" void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag
           for(unsigned long int jp = 0; jp < ntot; jp++)
             {   
               // Set to a value between 0 and 256 if the full range is greater than the local precision
-              fld_q[jp] = round( ( fld_1d[jp] - minval ) / deps );
+              double fq = aopt * fld_1d[jp] + bopt; // fld_1d[jp]-minval is always >= 0
+              fld_q[jp] = fq;
+              // fld_q[jp] = round( ( fld_1d[jp] - minval ) / deps ); // Before optimization
             }
           }   	 
     

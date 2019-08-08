@@ -35,20 +35,21 @@
 #include "waveletcdf97_3d.h"
 
 /* Three-dimensional wavelet transform using CDF9/7 wavelets */
-void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X)
+void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double * restrict X)
 {
   // Lifting filter coefficients
   static const double lfc[4] = {-1.5861343420693648, -0.0529801185718856, 0.8829110755411875, 0.4435068520511142};
 
   // Scale factor
   static const double scl = 1.1496043988602418;
+  static const double pscl = 1.0/scl;
 
   // Indexes
   int k;
   unsigned long int i1, i2, i3, i, M1, M2, M3, M, N, Q;
 
   // Temporary vectors
-  double *V, *V0, *V1;
+  double * restrict V, * restrict V0, * restrict V1;
 
   // Extrapolation coefficients for odd-sized arrays
   double ext[3];
@@ -57,9 +58,13 @@ void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X)
   ext[2] = -2*(lfc[0]+lfc[2]+3*lfc[0]*lfc[1]*lfc[2])/(1+2*lfc[1]*lfc[2]);
 
   // Initialize data size and level to input values
-  unsigned long int N1 = (unsigned long int)(N1in);
-  unsigned long int N2 = (unsigned long int)(N2in);
-  unsigned long int N3 = (unsigned long int)(N3in);
+  unsigned long int N1L = (unsigned long int)(N1in);
+  unsigned long int N2L = (unsigned long int)(N2in);
+  unsigned long int N3L = (unsigned long int)(N3in);
+  unsigned long int N1 = N1L;
+  unsigned long int N2 = N2L;
+  unsigned long int N3 = N3L;
+  unsigned long int N1N2L = N1L*N2L;
   int lvl = lvlin;
 
   if (lvl >= 0)   
@@ -90,7 +95,8 @@ void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X)
                 for (i2 = 0; i2 < N2; i2++)
                   {
                     // Place data elements in a contiguous vector
-                    for (i1 = 0; i1 < N1; i1++) V[i1] = X[i1+N1in*i2+N1in*N2in*i3];
+                    unsigned long int i23 = N1L*i2+N1N2L*i3;
+                    for (i1 = 0; i1 < N1; i1++) V[i1] = X[i1+i23];
 
                     // Initialize low-pass and high-pass filtered vectors
                     for (i = 0; i < M; i++)
@@ -122,11 +128,11 @@ void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X)
                     for (i = 0; i < M; i++)
                       {
                         V[i] = V0[i]*scl;
-                        if (2UL*i+1UL<N) V[i+M] = V1[i]/scl;
+                        if (2UL*i+1UL<N) V[i+M] = V1[i]*pscl;
                       }
 
                     // Substitute the result in the 3D array
-                    for (i1 = 0; i1 < N1; i1++) X[i1+N1in*i2+N1in*N2in*i3] = V[i1];
+                    for (i1 = 0; i1 < N1; i1++) X[i1+i23] = V[i1];
                   }
 
               // Deallocate arrays
@@ -153,7 +159,8 @@ void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X)
                 for (i1 = 0; i1 < N1; i1++)
                   {
                     // Place data elements in a contiguous vector
-                    for (i2 = 0; i2 < N2; i2++) V[i2] = X[i1+N1in*i2+N1in*N2in*i3];
+                    unsigned long int i13 = i1+N1N2L*i3;
+                    for (i2 = 0; i2 < N2; i2++) V[i2] = X[N1L*i2+i13];
 
                     // Initialize low-pass and high-pass filtered vectors
                     for (i = 0; i < M; i++)
@@ -185,11 +192,11 @@ void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X)
                     for (i = 0; i < M; i++)
                       {
                         V[i] = V0[i]*scl;
-                        if (2UL*i+1UL<N) V[i+M] = V1[i]/scl;
+                        if (2UL*i+1UL<N) V[i+M] = V1[i]*pscl;
                       }
 
                     // Substitute the result in the 3D array
-                    for (i2 = 0; i2 < N2; i2++) X[i1+N1in*i2+N1in*N2in*i3] = V[i2];
+                    for (i2 = 0; i2 < N2; i2++) X[N1L*i2+i13] = V[i2];
                   }
 
               // Deallocate arrays
@@ -216,7 +223,8 @@ void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X)
                 for (i1 = 0; i1 < N1; i1++)
                   {
                     // Place data elements in a contiguous vector
-                    for (i3 = 0; i3 < N3; i3++) V[i3] = X[i1+N1in*i2+N1in*N2in*i3];
+                    unsigned long int i12 = i1+N1L*i2;
+                    for (i3 = 0; i3 < N3; i3++) V[i3] = X[i12+N1N2L*i3];
 
                     // Initialize low-pass and high-pass filtered vectors
                     for (i = 0; i < M; i++)
@@ -248,11 +256,11 @@ void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X)
                     for (i = 0; i < M; i++)
                       {
                         V[i] = V0[i]*scl;
-                        if (2UL*i+1UL<N) V[i+M] = V1[i]/scl;
+                        if (2UL*i+1UL<N) V[i+M] = V1[i]*pscl;
                       }
 
                     // Substitute the result in the 3D array
-                    for (i3 = 0; i3 < N3; i3++) X[i1+N1in*i2+N1in*N2in*i3] = V[i3];
+                    for (i3 = 0; i3 < N3; i3++) X[i12+N1N2L*i3] = V[i3];
                   }
 
               // Deallocate arrays
@@ -297,10 +305,11 @@ void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X)
                 for (i1 = 0; i1 < M1; i1++)
                   {
                     // Place data elements in a contiguous vector
-                    for (i3 = 0; i3 < M3; i3++) V[i3] = X[i1+N1in*i2+N1in*N2in*i3];
+                    unsigned long int i12 = i1+N1L*i2;
+                    for (i3 = 0; i3 < M3; i3++) V[i3] = X[i12+N1N2L*i3];
 
                     // Initialize low-pass and high-pass filtered vectors
-                    for (i = 0; i < Q; i++) V0[i] = V[i]/scl;
+                    for (i = 0; i < Q; i++) V0[i] = V[i]*pscl;
                     for (i = 0; i < M-Q; i++) V1[i] = V[i+Q]*scl;
                     if (M%2UL) V1[Q-1UL] = 0; 
 
@@ -328,7 +337,7 @@ void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X)
                       }
 
                     // Substitute the result in the 3D array
-                    for (i3 = 0; i3 < M3; i3++) X[i1+N1in*i2+N1in*N2in*i3] = V[i3];
+                    for (i3 = 0; i3 < M3; i3++) X[i12+N1N2L*i3] = V[i3];
                   }
 
               // Deallocate arrays
@@ -355,10 +364,11 @@ void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X)
                 for (i1 = 0; i1 < M1; i1++)
                   {
                     // Place data elements in a contiguous vector
-                    for (i2 = 0; i2 < M2; i2++) V[i2] = X[i1+N1in*i2+N1in*N2in*i3];
+                    unsigned long int i13 = i1+N1N2L*i3;
+                    for (i2 = 0; i2 < M2; i2++) V[i2] = X[N1L*i2+i13];
 
                     // Initialize low-pass and high-pass filtered vectors
-                    for (i = 0; i < Q; i++) V0[i] = V[i]/scl;
+                    for (i = 0; i < Q; i++) V0[i] = V[i]*pscl;
                     for (i = 0; i < M-Q; i++) V1[i] = V[i+Q]*scl;
                     if (M%2UL) V1[Q-1UL] = 0; 
 
@@ -386,7 +396,7 @@ void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X)
                       }
 
                     // Substitute the result in the 3D array
-                    for (i2 = 0; i2 < M2; i2++) X[i1+N1in*i2+N1in*N2in*i3] = V[i2];
+                    for (i2 = 0; i2 < M2; i2++) X[N1L*i2+i13] = V[i2];
                   }
 
               // Deallocate arrays
@@ -413,10 +423,11 @@ void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X)
                 for (i2 = 0; i2 < M2; i2++)
                   {
                     // Place data elements in a contiguous vector
-                    for (i1 = 0; i1 < M1; i1++) V[i1] = X[i1+N1in*i2+N1in*N2in*i3];
+                    unsigned long int i23 = N1L*i2+N1N2L*i3;
+                    for (i1 = 0; i1 < M1; i1++) V[i1] = X[i1+i23];
 
                     // Initialize low-pass and high-pass filtered vectors
-                    for (i = 0; i < Q; i++) V0[i] = V[i]/scl;
+                    for (i = 0; i < Q; i++) V0[i] = V[i]*pscl;
                     for (i = 0; i < M-Q; i++) V1[i] = V[i+Q]*scl;
                     if (M%2UL) V1[Q-1UL] = 0; 
 
@@ -444,7 +455,7 @@ void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X)
                       }
 
                     // Substitute the result in the 3D array
-                    for (i1 = 0; i1 < M1; i1++) X[i1+N1in*i2+N1in*N2in*i3] = V[i1];
+                    for (i1 = 0; i1 < M1; i1++) X[i1+i23] = V[i1];
                   }
 
               // Deallocate arrays
