@@ -152,7 +152,7 @@ int main( int argc, char *argv[] )
 
           // Attributes
           double time, nu, epsi, domain_size[3];
-          int nx, ny, nz, nxyz[3];
+          int nxyz[3];
 
           // Open file
           faplist_id = H5Pcreate (H5P_FILE_ACCESS);
