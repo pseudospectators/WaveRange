@@ -120,14 +120,6 @@
 #define CODE_BITS 32
 #define Top_value ((code_value)1 << (CODE_BITS-1))
 
-
-/* all IO is done by these macros - change them if you want to */
-/* no checking is done - do it here if you want it             */
-/* cod is a pointer to the used rangecoder                     */
-//#define outbyte(cod,x) putchar(x)
-//#define inbyte(cod)    getchar()
-
-
 #ifdef RENORM95
 #include "renorm95.c"
 
@@ -137,36 +129,38 @@
 #define Bottom_value (Top_value >> 8)
 
 #ifdef NOWARN
-#ifdef GLOBALRANGECODER
-char coderversion[]="rangecoder 1.3 NOWARN GLOBAL (c) 1997-2000 Michael Schindler";
-#else
 char coderversion[]="rangecoder 1.3 NOWARN (c) 1997-2000 Michael Schindler";
-#endif
 #else    /*NOWARN*/
-#ifdef GLOBALRANGECODER
-char coderversion[]="rangecoder 1.3 GLOBAL (c) 1997-2000 Michael Schindler";
-#else
 char coderversion[]="rangecoder 1.3 (c) 1997-2000 Michael Schindler";
-#endif
 #endif   /*NOWARN*/
 #endif   /*RENORM95*/
 
 
-#ifdef GLOBALRANGECODER
-/* if this is defined we'll make a global variable rngc and    */
-/* make RNGC use that var; we'll also omit unneeded parameters */
-static rangecoder rngc;
-
-#define RNGC (rngc)
-#define M_outbyte(a) outbyte(&rngc,a)
-#define M_inbyte inbyte(&rngc)
-#define enc_normalize(rc) M_enc_normalize()
-#define dec_normalize(rc) M_dec_normalize()
-#else
-#define RNGC (*rc)
-#define M_outbyte(a) outbyte(rc,a)
-#define M_inbyte inbyte(rc)
+/* Read, echo and store a character from buf                 */  
+static Inline unsigned char outbyte( rangecoder *rc, unsigned char buf )
+{
+#ifndef NOWARN
+    if ((*rc).datapos >= (*rc).datalen) 
+    {  printf( "Error: outbyte (*rc).datalen limit exceeded\n" );
+       abort();
+    }
 #endif
+    (*rc).databuf[(*rc).datapos++] = buf;
+    return buf;
+}
+
+
+/* Return the next stored character                          */
+static Inline unsigned char inbyte( rangecoder *rc )
+{
+#ifndef NOWARN
+    if ((*rc).datapos >= (*rc).datalen)
+    {  printf( "Error: inbyte (*rc).datalen limit exceeded\n" );
+       abort();
+    }
+#endif
+    return (*rc).databuf[(*rc).datapos++];
+}
 
 
 /* rc is the range coder to be used                            */
@@ -174,11 +168,11 @@ static rangecoder rngc;
 /* one could do without c, but then you have an additional if  */
 /* per outputbyte.                                             */
 void start_encoding( rangecoder *rc, char c, unsigned long int initlength )
-{   RNGC.low = 0;                /* Full code range */
-    RNGC.range = Top_value;
-    RNGC.buffer = c;
-    RNGC.help = 0;               /* No bytes to follow */
-    RNGC.bytecount = initlength;
+{   (*rc).low = 0;                /* Full code range */
+    (*rc).range = Top_value;
+    (*rc).buffer = c;
+    (*rc).help = 0;               /* No bytes to follow */
+    (*rc).bytecount = initlength;
 }
 
 
@@ -186,29 +180,29 @@ void start_encoding( rangecoder *rc, char c, unsigned long int initlength )
 /* I do the normalization before I need a defined state instead of */
 /* after messing it up. This simplifies starting and ending.       */
 static Inline void enc_normalize( rangecoder *rc )
-{   while(RNGC.range <= Bottom_value)     /* do we need renormalisation?  */
-    {   if (RNGC.low < (code_value)0xff<<SHIFT_BITS)  /* no carry possible --> output */
-        {   M_outbyte(RNGC.buffer);
-            for(; RNGC.help; RNGC.help--)
-                M_outbyte(0xff);
-            RNGC.buffer = (unsigned char)(RNGC.low >> SHIFT_BITS);
-        } else if (RNGC.low & Top_value) /* carry now, no future carry */
-        {   M_outbyte(RNGC.buffer+1);
-            for(; RNGC.help; RNGC.help--)
-                M_outbyte(0);
-            RNGC.buffer = (unsigned char)(RNGC.low >> SHIFT_BITS);
+{   while((*rc).range <= Bottom_value)     /* do we need renormalisation?  */
+    {   if ((*rc).low < (code_value)0xff<<SHIFT_BITS)  /* no carry possible --> output */
+        {   outbyte(rc,(*rc).buffer);
+            for(; (*rc).help; (*rc).help--)
+                outbyte(rc,0xff);
+            (*rc).buffer = (unsigned char)((*rc).low >> SHIFT_BITS);
+        } else if ((*rc).low & Top_value) /* carry now, no future carry */
+        {   outbyte(rc,(*rc).buffer+1);
+            for(; (*rc).help; (*rc).help--)
+                outbyte(rc,0);
+            (*rc).buffer = (unsigned char)((*rc).low >> SHIFT_BITS);
         } else                           /* passes on a potential carry */
 #ifdef NOWARN
-            RNGC.help++;
+            (*rc).help++;
 #else
-            if (RNGC.bytestofollow++ == 0xffffffffL)
+            if ((*rc).bytestofollow++ == 0xffffffffL)
             {   fprintf(stderr,"Too many bytes outstanding - File too large\n");
                 exit(1);
             }
 #endif
-        RNGC.range <<= 8;
-        RNGC.low = (RNGC.low<<8) & (Top_value-1);
-        RNGC.bytecount++;
+        (*rc).range <<= 8;
+        (*rc).low = ((*rc).low<<8) & (Top_value-1);
+        (*rc).bytecount++;
     }
 }
 #endif
@@ -223,32 +217,30 @@ static Inline void enc_normalize( rangecoder *rc )
 void encode_freq( rangecoder *rc, freq sy_f, freq lt_f, freq tot_f )
 {	code_value r, tmp;
 	enc_normalize( rc );
-	r = RNGC.range / tot_f;
+	r = (*rc).range / tot_f;
 	tmp = r * lt_f;
-	RNGC.low += tmp;
+	(*rc).low += tmp;
 #ifdef EXTRAFAST
-    RNGC.range = r * sy_f;
+    (*rc).range = r * sy_f;
 #else
-    if (lt_f+sy_f < tot_f)
-		RNGC.range = r * sy_f;
-    else
-		RNGC.range -= tmp;
+    (*rc).range -= tmp;
+    if (lt_f+sy_f < tot_f) (*rc).range = r * sy_f;
 #endif
 }
 
 void encode_shift( rangecoder *rc, freq sy_f, freq lt_f, freq shift )
 {	code_value r, tmp;
 	enc_normalize( rc );
-	r = RNGC.range >> shift;
+	r = (*rc).range >> shift;
 	tmp = r * lt_f;
-	RNGC.low += tmp;
+	(*rc).low += tmp;
 #ifdef EXTRAFAST
-	RNGC.range = r * sy_f;
+	(*rc).range = r * sy_f;
 #else
 	if ((lt_f+sy_f) >> shift)
-		RNGC.range -= tmp;
+		(*rc).range -= tmp;
 	else  
-		RNGC.range = r * sy_f;
+		(*rc).range = r * sy_f;
 #endif
 }
 
@@ -262,25 +254,25 @@ void encode_shift( rangecoder *rc, freq sy_f, freq lt_f, freq shift )
 uint4 done_encoding( rangecoder *rc )
 {   uint tmp;
     enc_normalize(rc);     /* now we have a normalized state */
-    RNGC.bytecount += 5;
-    if ((RNGC.low & (Bottom_value-1)) < ((RNGC.bytecount&0xffffffL)>>1))
-       tmp = RNGC.low >> SHIFT_BITS;
+    (*rc).bytecount += 5;
+    if (((*rc).low & (Bottom_value-1)) < (((*rc).bytecount&0xffffffL)>>1))
+       tmp = (*rc).low >> SHIFT_BITS;
     else
-       tmp = (RNGC.low >> SHIFT_BITS) + 1;
+       tmp = ((*rc).low >> SHIFT_BITS) + 1;
     if (tmp > 0xff) /* we have a carry */
-    {   M_outbyte(RNGC.buffer+1);
-        for(; RNGC.help; RNGC.help--)
-            M_outbyte(0);
+    {   outbyte(rc,(*rc).buffer+1);
+        for(; (*rc).help; (*rc).help--)
+            outbyte(rc,0);
     } else  /* no carry */
-    {   M_outbyte(RNGC.buffer);
-        for(; RNGC.help; RNGC.help--)
-            M_outbyte(0xff);
+    {   outbyte(rc,(*rc).buffer);
+        for(; (*rc).help; (*rc).help--)
+            outbyte(rc,0xff);
     }
-    M_outbyte(tmp & 0xff);
-    M_outbyte((RNGC.bytecount>>16) & 0xff);
-    M_outbyte((RNGC.bytecount>>8) & 0xff);
-    M_outbyte(RNGC.bytecount & 0xff);
-    return RNGC.bytecount;
+    outbyte(rc,tmp & 0xff);
+    outbyte(rc,((*rc).bytecount>>16) & 0xff);
+    outbyte(rc,((*rc).bytecount>>8) & 0xff);
+    outbyte(rc,(*rc).bytecount & 0xff);
+    return (*rc).bytecount;
 }
 
 
@@ -288,22 +280,22 @@ uint4 done_encoding( rangecoder *rc )
 /* rc is the range coder to be used                          */
 /* returns the char from start_encoding or EOF               */
 int start_decoding( rangecoder *rc )
-{   int c = M_inbyte;
+{   int c = inbyte(rc);
     if (c==EOF)
         return EOF;
-    RNGC.buffer = M_inbyte;
-    RNGC.low = RNGC.buffer >> (8-EXTRA_BITS);
-    RNGC.range = (code_value)1 << EXTRA_BITS;
+    (*rc).buffer = inbyte(rc);
+    (*rc).low = (*rc).buffer >> (8-EXTRA_BITS);
+    (*rc).range = (code_value)1 << EXTRA_BITS;
     return c;
 }
 
 
 static Inline void dec_normalize( rangecoder *rc )
-{   while (RNGC.range <= Bottom_value)
-    {   RNGC.low = (RNGC.low<<8) | ((RNGC.buffer<<EXTRA_BITS)&0xff);
-        RNGC.buffer = M_inbyte;
-        RNGC.low |= RNGC.buffer >> (8-EXTRA_BITS);
-        RNGC.range <<= 8;
+{   while ((*rc).range <= Bottom_value)
+    {   (*rc).low = ((*rc).low<<8) | (((*rc).buffer<<EXTRA_BITS)&0xff);
+        (*rc).buffer = inbyte(rc);
+        (*rc).low |= (*rc).buffer >> (8-EXTRA_BITS);
+        (*rc).range <<= 8;
     }
 }
 #endif
@@ -317,8 +309,8 @@ static Inline void dec_normalize( rangecoder *rc )
 freq decode_culfreq( rangecoder *rc, freq tot_f )
 {   freq tmp;
     dec_normalize(rc);
-    RNGC.help = RNGC.range/tot_f;
-    tmp = RNGC.low/RNGC.help;
+    (*rc).help = (*rc).range/tot_f;
+    tmp = (*rc).low/(*rc).help;
 #ifdef EXTRAFAST
     return tmp;
 #else
@@ -329,8 +321,8 @@ freq decode_culfreq( rangecoder *rc, freq tot_f )
 freq decode_culshift( rangecoder *rc, freq shift )
 {   freq tmp;
     dec_normalize(rc);
-    RNGC.help = RNGC.range>>shift;
-    tmp = RNGC.low/RNGC.help;
+    (*rc).help = (*rc).range>>shift;
+    tmp = (*rc).low/(*rc).help;
 #ifdef EXTRAFAST
     return tmp;
 #else
@@ -346,15 +338,15 @@ freq decode_culshift( rangecoder *rc, freq shift )
 /* tot_f is the total interval length (total frequency sum)  */
 void decode_update( rangecoder *rc, freq sy_f, freq lt_f, freq tot_f)
 {   code_value tmp;
-    tmp = RNGC.help * lt_f;
-    RNGC.low -= tmp;
+    tmp = (*rc).help * lt_f;
+    (*rc).low -= tmp;
 #ifdef EXTRAFAST
-    RNGC.range = RNGC.help * sy_f;
+    (*rc).range = (*rc).help * sy_f;
 #else
     if (lt_f + sy_f < tot_f)
-        RNGC.range = RNGC.help * sy_f;
+        (*rc).range = (*rc).help * sy_f;
     else
-        RNGC.range -= tmp;
+        (*rc).range -= tmp;
 #endif
 }
 
@@ -380,35 +372,17 @@ void done_decoding( rangecoder *rc )
 {   dec_normalize(rc);      /* normalize to use up all bytes */
 }
 
-/* Return the next stored character                          */
-unsigned char inbyte( rangecoder *rc )
-{   if (RNGC.datapos >= RNGC.datalen)
-    {  printf( "Error: inbyte RNGC.datalen limit exceeded\n" );
-       abort();
-    }
-    return RNGC.databuf[RNGC.datapos++];
-}
-
-/* Read, echo and store a character from buf                 */  
-unsigned char outbyte( rangecoder *rc, unsigned char buf )
-{   if (RNGC.datapos >= RNGC.datalen) 
-    {  printf( "Error: outbyte RNGC.datalen limit exceeded\n" );
-       abort();
-    }
-    RNGC.databuf[RNGC.datapos++] = buf;
-    return buf;
-}
 
 /* Set up the data buffer array                              */
 void init_databuf( rangecoder *rc, unsigned long int maxlen )
-{   RNGC.datalen = maxlen;
-    RNGC.datapos = 0;
-    RNGC.databuf = (unsigned char *)calloc(maxlen, sizeof(unsigned char) );
+{   (*rc).datalen = maxlen;
+    (*rc).datapos = 0;
+    (*rc).databuf = (unsigned char *)calloc(maxlen, sizeof(unsigned char) );
 }
 
 /* Deallocate the data buffer array                          */
 void free_databuf( rangecoder *rc )
-{   free(RNGC.databuf);
+{   free((*rc).databuf);
 }
 
 /* Count number of occurances of each byte */

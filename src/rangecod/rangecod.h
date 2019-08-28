@@ -132,23 +132,6 @@ typedef struct {
 
 
 
-/* supply the following as methods of the arithcoder object  */
-/* omit the first parameter then (C++)                       */
-#ifdef GLOBALRANGECODER
-#define start_encoding(rc,a,b) M_start_encoding(a,b)
-#define encode_freq(rc,a,b,c) M_encode_freq(a,b,c)
-#define encode_shift(rc,a,b,c) M_encode_shift(a,b,c)
-#define done_encoding(rc) M_done_encoding()
-#define start_decoding(rc) M_start_decoding()
-#define decode_culfreq(rc,a) M_decode_culfreq(a)
-#define decode_culshift(rc,a) M_decode_culshift(a)
-#define decode_update(rc,a,b,c) M_decode_update(a,b,c)
-#define decode_byte(rc) M_decode_byte()
-#define decode_short(rc) M_decode_short()
-#define done_decoding(rc) M_done_decoding()
-#endif
-
-
 /* Start the encoder                                         */
 /* rc is the range coder to be used                          */
 /* c is written as first byte in the datastream (header,...) */
@@ -164,6 +147,7 @@ void start_encoding( rangecoder *rc, char c, unsigned long int initlength);
 void encode_freq( rangecoder *rc, freq sy_f, freq lt_f, freq tot_f );
 void encode_shift( rangecoder *rc, freq sy_f, freq lt_f, freq shift );
 
+
 /* Encode a byte/short without modelling                     */
 /* rc is the range coder to be used                          */
 /* b,s is the data to be encoded                             */
@@ -177,7 +161,6 @@ void encode_shift( rangecoder *rc, freq sy_f, freq lt_f, freq shift );
 uint4 done_encoding( rangecoder *rc );
 
 
-
 /* Start the decoder                                         */
 /* rc is the range coder to be used                          */
 /* returns the char from start_encoding or EOF               */
@@ -189,7 +172,7 @@ int start_decoding( rangecoder *rc );
 /* or: totf is 1<<shift                                      */
 /* returns the <= culmulative frequency                      */
 freq decode_culfreq( rangecoder *rc, freq tot_f );
-freq decode_culshift( rangecoder *ac, freq shift );
+freq decode_culshift( rangecoder *rc, freq shift );
 
 /* Update decoding state                                     */
 /* rc is the range coder to be used                          */
@@ -208,12 +191,6 @@ unsigned short decode_short(rangecoder *rc);
 /* Finish decoding                                           */
 /* rc is the range coder to be used                          */
 void done_decoding( rangecoder *rc );
-
-/* Return the next stored character                          */
-unsigned char inbyte( rangecoder *rc );
-
-/* Read, echo and store a character from buf                 */  
-unsigned char outbyte( rangecoder *rc, unsigned char buf );
 
 /* Set up the data buffer array                              */
 void init_databuf( rangecoder *rc, unsigned long int maxlen );

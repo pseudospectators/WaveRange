@@ -196,17 +196,18 @@ static void range_decode(unsigned char *enc_q, unsigned long int len_out_q, unsi
             middle = (first+last)/2;
             while (first <= last)
             {
-              if(counts[middle] < cf)
+              freq cmid = counts[middle];
+              if(cmid < cf)
               {
                 first = middle + 1;
               }
-              else if(counts[middle] == cf)
+              else if(cmid > cf)
               {
-                break;
+                last = middle - 1;
               }
               else
               {
-                last = middle - 1;
+                break;
               }
               middle = (first + last)/2;
             }
