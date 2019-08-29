@@ -151,7 +151,7 @@ static void range_encode(unsigned char *fld_q, unsigned long int ntot, unsigned 
 
 /* Decode the range-encoded data enc_q */
 static void range_decode(unsigned char *enc_q, unsigned long int len_out_q, unsigned char *dec_q, unsigned long int ntot)
-{   freq counts[257], blocksize, i, cf, symbol, middle, first, last;
+{   freq counts[257], blocksize, i, i1, cf, symbol, middle;
 
     // Allocate a range coder object
     rangecoder *rc = (rangecoder*)malloc(sizeof(rangecoder));
@@ -187,34 +187,20 @@ static void range_decode(unsigned char *enc_q, unsigned long int len_out_q, unsi
         }
         counts[256] = blocksize;
 
+        // Allocate search table
+        freq *invcounts = new freq[blocksize+1];
+
+        // Fill values in the search table
+        for (i1=0; i1<256; i1++) 
+            for (i=counts[i1]; i<counts[i1+1]; i++) invcounts[i] = i1;
+        invcounts[blocksize] = 256;
+
+        // Loop for all decoding elements in the block
         for (i=0; i<blocksize; i++)
         {   // Decode frequency
             cf = decode_culfreq(rc,blocksize);
-            // Figure out nearst symbol using a binary search
-            first = 0;
-            last = 256;
-            middle = (first+last)/2;
-            while (first <= last)
-            {
-              freq cmid = counts[middle];
-              if(cmid < cf)
-              {
-                first = middle + 1;
-              }
-              else if(cmid > cf)
-              {
-                last = middle - 1;
-              }
-              else
-              {
-                break;
-              }
-              middle = (first + last)/2;
-            }
-            if(first > last)
-            {
-              middle = last;
-            }
+            // Symbol from the search table 
+            middle = invcounts[cf];
             // If some symbols have zero frequency, skip them
             for (symbol=middle; counts[symbol+1]<=cf; symbol++);
             // Update the decoder
@@ -222,6 +208,9 @@ static void range_decode(unsigned char *enc_q, unsigned long int len_out_q, unsi
             // Store the decoded element
             dec_q[pos_out++] = symbol;
         }
+
+        // Delete search table
+        delete [] invcounts;
     }
 
     // Finalize decoding 
@@ -385,7 +374,6 @@ extern "C" void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag
                   // Set to a value between 0 and 256 if the full range is greater than the local precision
                   double fq = aopt * fld_1d[jw] + bopt; // fld_1d[jp]-minval is always >= 0
                   fld_q[jw] = fq;
-                  // fld_q[jw] = round( ( fld_1d[jw] - minval ) / deps ); // Before optimization
                 }
             }
           }
@@ -398,7 +386,6 @@ extern "C" void encoding_wrap(int nx, int ny, int nz, double *fld_1d, int wtflag
               // Set to a value between 0 and 256 if the full range is greater than the local precision
               double fq = aopt * fld_1d[jp] + bopt; // fld_1d[jp]-minval is always >= 0
               fld_q[jp] = fq;
-              // fld_q[jp] = round( ( fld_1d[jp] - minval ) / deps ); // Before optimization
             }
           }   	 
     

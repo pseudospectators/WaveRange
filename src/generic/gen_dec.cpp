@@ -88,7 +88,6 @@ int main( int argc, char *argv[] )
 
     // I/O variable declarations
     int ifiletype = 0, idinv, icomp;
-    int err = 0;
 
     // I/O file names
     string in_name = "data.wrb", header_name = "data.wrh", out_name = "datarec.bin";

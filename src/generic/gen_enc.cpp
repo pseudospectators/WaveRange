@@ -77,7 +77,6 @@ int main( int argc, char *argv[] )
 
     // Local cutoff tolerance parameters
     int mx, my, mz;
-    unsigned int mtot;
     double *cutoffvec;
 
     // Field parameter arrays
@@ -248,7 +247,6 @@ int main( int argc, char *argv[] )
     mx = 1;
     my = 1;
     mz = 1;
-    mtot = 1;
     cutoffvec = new double[1];
     cutoffvec[0] = tol_base;
 

@@ -81,7 +81,6 @@ int main( int argc, char *argv[] )
 
     // Local cutoff tolerance parameters
     int mx, my, mz;
-    unsigned int mtot;
     double *cutoffvec;
 
     // Data variable declarations
@@ -96,7 +95,6 @@ int main( int argc, char *argv[] )
 
     // I/O variable declarations
     int ifiletype = 0, iintype = 2;
-    int err = 0;
     string prefix_name, ext_name = ".enc", in_name, out_name, header_name, control_name;
     string bar, bar2, bar3, bar4, bar5;
 
@@ -177,7 +175,6 @@ int main( int argc, char *argv[] )
           mx = 1;
           my = 1;
           mz = 1;
-          mtot = 1;
           cutoffvec = new double[1];
           cutoffvec[0] = tol_base;
 
@@ -356,7 +353,6 @@ int main( int argc, char *argv[] )
             mx = 1;
             my = 1;
             mz = 1;
-            mtot = 1;
             cutoffvec = new double[1];
             cutoffvec[0] = tol_base;
           }
