@@ -42,7 +42,7 @@ void waveletcdf97_3d(int N1in, int N2in, int N3in, int lvlin, double *X)
 
   // Scale factor
   static const double scl = 1.1496043988602418;
-  static const double pscl = 1.0/scl;
+  static const double pscl = 1.0/1.1496043988602418;
 
   // Indexes
   int k;
