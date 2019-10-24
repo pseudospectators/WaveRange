@@ -196,6 +196,7 @@ int main( int argc, char *argv[] )
           fheader << " File type (0: regular output; 1: backup merged; 2: backup separated): " << ifiletype << endl;
           fheader << " Input files contained " << nbytes << "-byte floating point data" << endl;
           if (flag_convertendian) fheader << " Converted big endian to little endian or vice versa" << endl;
+            else fheader << " No endian conversion" << endl; 
           fheader << " Base cutoff relative tolerance: " << tol_base << endl;
           fheader.close();
 
