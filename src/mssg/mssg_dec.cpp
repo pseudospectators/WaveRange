@@ -206,7 +206,7 @@ int main( int argc, char *argv[] )
 
           // Skip first 8 lines from the header file
           string str; 
-          for (int j=0; j<9; j++) getline(fheader, str);
+          for (int j=0; j<8; j++) getline(fheader, str);
 
           // Open encoded data file name
           ifstream finput;
