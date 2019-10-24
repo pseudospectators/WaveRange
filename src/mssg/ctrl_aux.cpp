@@ -332,6 +332,11 @@ void write_field_mssg( const char *filename, int flag_convertendian, int nbytes,
     // Temporary array for conversion
     unsigned char *temp2;
 
+    // Temporary variables for type conversion
+    float foo;
+    static float *buf4;
+    static double *buf8;
+
     // Write in fortran order
     for (int iz = 0; iz < nz; iz++)
       {
@@ -350,13 +355,13 @@ void write_field_mssg( const char *filename, int flag_convertendian, int nbytes,
             // Reinterpret as float or double
             if (nbytes == 4)
               {
-                float foo = float(buf);
-                float *buf4 = &foo;
+                foo = float(buf);
+                buf4 = &foo;
                 temp2 = reinterpret_cast<unsigned char*>(buf4);
               }
             else
               {
-                double *buf8 = &buf;
+                buf8 = &buf;
                 temp2 = reinterpret_cast<unsigned char*>(buf8);
               }
 

@@ -396,5 +396,8 @@ int main( int argc, char *argv[] )
     delete [] idinv_vec;
     delete [] icomp_vec;
 
+    // Display a message on exit
+    cout << "=== End of compression ===\n";
+
     return 0;
 }

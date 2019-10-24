@@ -105,6 +105,11 @@ void write_field_gen( const char *filename, int idset, int ifiletype, int flag_c
         outputfile.write(reinterpret_cast<char*>(foo), 8); 
       }
 
+    // Temporary variables for type conversion
+    float foo2;
+    static float *buf4;
+    static double *buf8;
+
     // Write the field in a file
     if (!idinv) // idinv == 0
       {
@@ -129,13 +134,13 @@ void write_field_gen( const char *filename, int idset, int ifiletype, int flag_c
                   // Reinterpret as float or double
                   if (nbytes == 4) 
                     {
-                      float foo = float(buf);
-                      float *buf4 = &foo;
+                      foo2 = float(buf);
+                      buf4 = &foo2;
                       temp2 = reinterpret_cast<unsigned char*>(buf4);
                     }
                   else
                     {
-                      double *buf8 = &buf;
+                      buf8 = &buf;
                       temp2 = reinterpret_cast<unsigned char*>(buf8);
                     }
 
@@ -174,13 +179,13 @@ void write_field_gen( const char *filename, int idset, int ifiletype, int flag_c
                   // Reinterpret as float or double
                   if (nbytes == 4) 
                     {
-                      float foo = float(buf);
-                      float *buf4 = &foo;
+                      foo2 = float(buf);
+                      buf4 = &foo2;
                       temp2 = reinterpret_cast<unsigned char*>(buf4);
                     }
                   else
                     {
-                      double *buf8 = &buf;
+                      buf8 = &buf;
                       temp2 = reinterpret_cast<unsigned char*>(buf8);
                     }
 
@@ -410,7 +415,7 @@ void read_field_gen_enc( ifstream &inputfile, unsigned char *fld, unsigned long 
 }
 
 
-/* Write double type data set */
+/* Write float of double type data set */
 void write_field_gen_raw( const char *filename, int nbytes, double *fld, unsigned long int ntot )
 {
     // I/O variable declarations
@@ -430,6 +435,11 @@ void write_field_gen_raw( const char *filename, int nbytes, double *fld, unsigne
     outputfile.open(filename, ios::binary|ios::out|ios::app);
     assert(outputfile.is_open());
 
+    // Temporary variables for type conversion
+    float foo2;
+    static float *buf4;
+    static double *buf8;
+
     // 1d loop for all elements of the array
     for (unsigned long int j = 0; j < ntot; j++)
       {
@@ -439,13 +449,13 @@ void write_field_gen_raw( const char *filename, int nbytes, double *fld, unsigne
         // Reinterpret as float or double
         if (nbytes == 4) 
           {
-            float foo = float(buf);
-            float *buf4 = &foo;
+            foo2 = float(buf);
+            buf4 = &foo2;
             temp2 = reinterpret_cast<unsigned char*>(buf4);
           }
         else
           {
-            double *buf8 = &buf;
+            buf8 = &buf;
             temp2 = reinterpret_cast<unsigned char*>(buf8);
           }
 

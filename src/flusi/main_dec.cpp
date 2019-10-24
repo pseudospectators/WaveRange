@@ -328,5 +328,8 @@ int main( int argc, char *argv[] )
     // Stop HDF5
     status = H5close();
 
+    // Display a message on exit
+    cout << "=== End of decompression ===\n";
+
     return 0;
 }

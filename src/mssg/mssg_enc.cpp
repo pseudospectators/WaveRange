@@ -517,5 +517,8 @@ int main( int argc, char *argv[] )
     // Deallocate memory
     delete [] cutoffvec;
 
+    // Display a message on exit
+    cout << "=== End of compression ===\n";
+
     return 0;
 }
