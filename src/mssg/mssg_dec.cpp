@@ -92,7 +92,7 @@ int main( int argc, char *argv[] )
     int ifiletype = 0, iouttype = 1;
     int err = 0;
 
-    // parameters variable definitons
+    // Parameters variable definitons
     string in_prefix_name, ext_name, out_prefix_name, in_name, out_name, header_name, control_name;
     string bar, bar2, bar3, bar4;
 
@@ -147,7 +147,7 @@ int main( int argc, char *argv[] )
     if (flag_convertendian) cout << "Convert big endian to little endian or vice versa" << endl;
     cout << "This proc id: " << thisproc << endl;
 
-    /* Encoding */
+    /* Decoding */
     switch (ifiletype) {
 
       // For regular output files
@@ -206,7 +206,7 @@ int main( int argc, char *argv[] )
 
           // Skip first 8 lines from the header file
           string str; 
-          for (int j=0; j<8; j++) getline(fheader, str);
+          for (int j=0; j<9; j++) getline(fheader, str);
 
           // Open encoded data file name
           ifstream finput;
