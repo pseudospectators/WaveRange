@@ -142,7 +142,7 @@ int main( int argc, char *argv[] )
     cout << "File type (0: Fortran sequential w 4-byte recl; 1: Fortran sequential w 8-byte recl; 2: C/C++): " << ifiletype << endl;
     if (flag_convertendian) cout << "Convert big endian to little endian or vice versa" << endl;
 
-    /* Encoding */
+    /* Decoding */
     switch (ifiletype) {
 
       // Fortran sequential access file with 4-byte space for record length
