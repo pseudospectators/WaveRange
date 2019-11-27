@@ -4,7 +4,13 @@ I. GENERAL INFORMATION
 
 WaveRange is a utility for compression of three-dimensional array output from computational physics solvers. It uses wavelet decomposition and subsequent range coding with quantization suitable for floating-point data.  
 
-Reference:
+References:
+
+[1] 
+http://arxiv.org/abs/1810.04822
+Dmitry Kolomenskiy, Ryo Onishi and Hitoshi Uehara "WaveRange: Wavelet-based data compression for three-dimensional numerical simulations on regular grids"
+
+[2]
 doc/cfdproc2017.pdf
 Dmitry Kolomenskiy, Ryo Onishi and Hitoshi Uehara "Wavelet-Based Compression of CFD Big Data"
 Proceedings of the 31st Computational Fluid Dynamics Symposium, Kyoto, December 12-14, 2017
