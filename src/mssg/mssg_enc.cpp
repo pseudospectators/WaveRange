@@ -44,6 +44,10 @@
 
 #include "../core/defs.h"
 #include "../core/wrappers.h"
+//NECs 2019/10/02
+#include "../core/trim_split.h"
+#include <algorithm> // for std::transform
+//NECe 2019/10/02
 #include "ctrl_aux.h"
 
 using namespace std;
@@ -98,42 +102,127 @@ int main( int argc, char *argv[] )
     string prefix_name, ext_name = ".enc", in_name, out_name, header_name, control_name;
     string bar, bar2, bar3, bar4, bar5;
 
-    // Interactive mode help string
-    cout << "usage: ./wrmssgenc FILE_NAME_PREFIX ENCODED_NAME_EXT TYPE PRECISION ENDIANFLIP TOLERANCE PROCID\n";
-    cout << "where TYPE=(0: regular output; 1: backup united; 2: backup divided), PRECISION=(1:single; 2:double), ENDIANFLIP=(0:no; 1:yes), TOLERANCE=(e.g. 1.0e-16) and PROCID=(this proc id)\n";
-    cout << "interactive mode if not enough arguments are passed.\n";
-
-    /* Prepare for encoding */
-    if ( argc == 8 )
+    //NECs 2019/10/02
+    char file_name[] = "inmeta";
+    int read_chk_flag = 0;    
+    std::ifstream ifs(file_name);
+    
+    if (!ifs.fail()) //check file existence
     {
-      // Read metadata from parameter string
-      cout << "automatic mode.";
-      prefix_name = argv[1];
-      ext_name = argv[2];
-      bar = argv[3];
-      bar2 = argv[4];
-      bar3 = argv[5];
-      bar4 = argv[6];
-      bar5 = argv[7];
+       std::string str;
+       std::string sbuf[5]; // buffer for read numeric params
+       // read parameters from file(inmeta)
+       std::cout << "==== " << file_name << " exists. ====" << std::endl;
+       while (getline(ifs, str))
+       {
+          std::string str_trim = trim(str, " \t\v\r\n");
+          if ( (int)(str_trim.length()) != 0 )
+          {
+             if ( str_trim.at(0) == '&' ) 
+             {
+                char delim[] = "=";
+                std::vector<std::string> str_split = split(str_trim, delim);
+                std::size_t size = str_split.size();
+                if ((int)(size) == 2) 
+                {
+                   read_chk_flag = 1;
+                   //std::string var_name = trim(str_split[0].substr(1,str_split[0].length()), " \t\v\r\n"); // 先頭の&を除く
+                   std::string var_name = trim(str_split[0], " \t\v\r\n"); 
+                   std::string var_value = trim(str_split[1], " \t\v\r\n");
+                   std::transform(var_name.begin(), var_name.end(), var_name.begin(), ::tolower);
+                   if (var_name == "&prefix_name") { prefix_name = var_value;}
+                   if (var_name == "&ext_name") { ext_name = var_value;}
+                   if (var_name == "&file_type") { sbuf[0] = var_value;}
+                   if (var_name == "&input_data_type") { sbuf[1] = var_value;}
+                   if (var_name == "&endian_conversion") { sbuf[2] = var_value;}
+                   if (var_name == "&tolerance") { sbuf[3] = var_value;}
+                   if (var_name == "&id_of_proc") { sbuf[4] = var_value;}
+                   //std::cout << var_name << " = " << var_value << std::endl;
+                }
+                else 
+                {
+                    /* eeror handling */
+                    if ((int)(size) > 1) {
+                      std::cout << "==== Error : '=' exists twice in a sentence :" << str_trim << "====" << std::endl;
+                    } else {
+                      std::cout << "==== Error 'value' is missing in a sentence :" << str_trim << "====" << std::endl;
+                    }
+                    return -1;
+                }
+             }
+//             else 
+//             {
+//                std::cout << "This line is considered a comment becase it does not start with &. : " << str_trim << std::endl;
+//             }
+          }
+       }
+       if (read_chk_flag == 0)
+       {
+          std::cout << "==== read parameters from " << file_name << " as old format. ====" << std::endl;
+          // read parameters from old format file.
+          std::ifstream ifs(file_name);
+          getline(ifs, prefix_name);
+          getline(ifs, ext_name);
+          getline(ifs, sbuf[0]);
+          getline(ifs, sbuf[1]);
+          getline(ifs, sbuf[2]);
+          getline(ifs, sbuf[3]);
+          getline(ifs, sbuf[4]);
+       }
+       std::cout << "prefix_name = " << prefix_name << std::endl;
+       std::cout << "ext_name = " << ext_name << std::endl;
+       std::cout << "file_type = " << sbuf[0] << std::endl;
+       std::cout << "input_data_type = " << sbuf[1] << std::endl;
+       std::cout << "endian_conversion = " << sbuf[2] << std::endl;
+       std::cout << "tolerance = " << sbuf[3] << std::endl;
+       std::cout << "id_of_proc = " << sbuf[4] << std::endl;
+       std::cout << "" << std::endl;
+       bar  = sbuf[0];
+       bar2 = sbuf[1];
+       bar3 = sbuf[2];
+       bar4 = sbuf[3];
+       bar5 = sbuf[4];
     }
     else
     {
-      // Read metadata
-      cout << "Enter data file name prefix []: ";
-      getline (cin,prefix_name);
-      cout << "Enter encoded file extension name [.enc]: ";
-      getline (cin,ext_name);
-      cout << "Enter file type (0: regular output; 1: backup merged; 2: backup separated) [0]: ";
-      getline (cin,bar);
-      cout << "Enter input data type (1: float; 2: double) [2]: ";
-      getline (cin,bar2);
-      cout << "Enter endian conversion (0: do not perform; 1: inversion) [1]: ";
-      getline (cin,bar3);
-      cout << "Enter base cutoff relative tolerance [1e-16]: ";
-      getline (cin,bar4);
-      cout << "Enter id of this proc [0]: ";
-      getline (cin,bar5);
-
+       std::cout << file_name << " doesn't exists." << std::endl;
+       //NECe 2019/10/02
+       // Interactive mode help string
+       cout << "usage: ./wrmssgenc FILE_NAME_PREFIX ENCODED_NAME_EXT TYPE PRECISION ENDIANFLIP TOLERANCE PROCID\n";
+       cout << "where TYPE=(0: regular output; 1: backup united; 2: backup divided), PRECISION=(1:single; 2:double), ENDIANFLIP=(0:no; 1:yes), TOLERANCE=(e.g. 1.0e-16) and PROCID=(this proc id)\n";
+       cout << "interactive mode if not enough arguments are passed.\n";
+        
+       /* Prepare for encoding */
+       if ( argc == 8 )
+       {
+          // Read metadata from parameter string
+          cout << "automatic mode.";
+          prefix_name = argv[1];
+          ext_name = argv[2];
+          bar = argv[3];
+          bar2 = argv[4];
+          bar3 = argv[5];
+          bar4 = argv[6];
+          bar5 = argv[7];
+       }
+       else
+       {
+           // Read metadata from stdin
+           cout << "Enter data file name prefix []: ";
+           getline (cin,prefix_name);
+           cout << "Enter encoded file extension name [.enc]: ";
+           getline (cin,ext_name);
+           cout << "Enter file type (0: regular output; 1: backup merged; 2: backup separated) [0]: ";
+           getline (cin,bar);
+           cout << "Enter input data type (1: float; 2: double) [2]: ";
+           getline (cin,bar2);
+           cout << "Enter endian conversion (0: do not perform; 1: inversion) [1]: ";
+           getline (cin,bar3);
+           cout << "Enter base cutoff relative tolerance [1e-16]: ";
+           getline (cin,bar4);
+           cout << "Enter id of this proc [0]: ";
+           getline (cin,bar5);
+       }
     }
     stringstream(bar) >> ifiletype;
     stringstream(bar2) >> iintype;
@@ -141,7 +230,7 @@ int main( int argc, char *argv[] )
     stringstream(bar3) >> flag_convertendian;
     stringstream(bar4) >> tol_base;
     stringstream(bar5) >> thisproc;
-
+    
     // Print out metadata
     cout << endl << "=== Compression parameters ===" << endl;
     cout << "Data file name prefix: " << prefix_name << endl;
@@ -523,3 +612,4 @@ int main( int argc, char *argv[] )
 
     return 0;
 }
+

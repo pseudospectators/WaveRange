@@ -1,0 +1,40 @@
+
+%fieLd =1
+  &inpUt_data_type = 2
+  &nx=64
+  &ny=64
+  &nz=64
+  &nh=1
+  &order=0
+  &compress=1
+  &tolerance=1e-3
+/
+
+&in_name=data.bin
+&out_name=data.wrb
+&endian_conversion=0
+&header_name=data.wrh
+&number_of_field=3
+&file_type=0
+
+%fiEld = 0
+  &input_data_type = 2
+  &order=0
+  &cOmpress=1
+  &tolerance=1e-6
+  &Nx=32
+  &Ny=32
+  &Nz=32
+  &nh=1
+/
+
+%field= 2
+  &input_data_type = 1
+  &nX=1
+  &nY=1
+  &nZ=1
+  &nh=1
+  &order=0
+  &compress=0
+/
+

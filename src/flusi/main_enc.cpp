@@ -43,6 +43,10 @@
 #include "hdf5.h"
 #include "../core/defs.h"
 #include "../core/wrappers.h"
+//NECs 2019/10/02
+#include "../core/trim_split.h"
+#include <algorithm> // for std::transform
+//NECe 2019/10/02
 #include "hdf5_interfaces.h"
 
 using namespace std;
@@ -87,32 +91,102 @@ int main( int argc, char *argv[] )
     string bar;
     string bar2;
 
-    cout << "usage: ./wrenc original_000.h5 compressed_000.h5 TYPE TOLERANCE\n";
-    cout << "where TYPE=(0: regular output; 1: backup) and TOLERANCE=(e.g. 1.0e-5)\n";
-    cout << "interactive mode if not enough arguments are passed.\n";
-
-    if ( argc == 5 )
+    //NECs 2019/10/02
+    char file_name[] = "inmeta";
+    int read_chk_flag = 0;    
+    std::ifstream ifs(file_name);
+     
+    if (!ifs.fail()) //check file existence
     {
-      cout << "automatic mode.";
-      in_name = argv[1];
-      out_name = argv[2];
-      bar = argv[3];
-      bar2 = argv[4];
+       std::string str;
+       std::string sbuf[5]; // buffer for read numeric params
+       // read parameters from file(inmeta)
+       std::cout << "==== " << file_name << " exists. ====" << std::endl;
+       while (getline(ifs, str))
+       {
+          std::string str_trim = trim(str, " \t\v\r\n");
+          if ( (int)(str_trim.length()) != 0 )
+          {
+             if ( str_trim.at(0) == '&' ) 
+             {
+                char delim[] = "=";
+                std::vector<std::string> str_split = split(str_trim, delim);
+                std::size_t size = str_split.size();
+                if ((int)(size) == 2) 
+                {
+                   read_chk_flag = 1;
+                   //std::string var_name = trim(str_split[0].substr(1,str_split[0].length()), " \t\v\r\n"); // 先頭の&を除く
+                   std::string var_name = trim(str_split[0], " \t\v\r\n"); 
+                   std::string var_value = trim(str_split[1], " \t\v\r\n");
+                   std::transform(var_name.begin(), var_name.end(), var_name.begin(), ::tolower);
+                   if (var_name == "&in_name") { in_name = var_value;}
+                   if (var_name == "&out_name") { out_name = var_value;}
+                   if (var_name == "&file_type") { sbuf[0] = var_value;}
+                   if (var_name == "&tolerance") { sbuf[1] = var_value;}
+                   //std::cout << var_name << " = " << var_value << std::endl;
+                }
+                else 
+                {
+                    /* eeror handling */
+                    if ((int)(size) > 1) {
+                      std::cout << "==== Error : '=' exists twice or more in a sentence :" << str_trim << " ====" << std::endl;
+                    } else {
+                      std::cout << "==== Error : 'value' is missing in a sentence :" << str_trim << " ====" << std::endl;
+                    }
+                    return -1;
+                }
+             }
+          }
+       }
+       if (read_chk_flag == 0)
+       {
+          std::cout << "==== read parameters from " << file_name << " as old format. ====" << std::endl;
+          // read parameters from old format file.
+          std::ifstream ifs(file_name);
+          getline(ifs, in_name);
+          getline(ifs, out_name);
+          getline(ifs, sbuf[0]);
+          getline(ifs, sbuf[1]);
+       }
+       std::cout << "in_name = " << in_name << std::endl;
+       std::cout << "out_name = " << out_name << std::endl;
+       std::cout << "file_type = " << sbuf[0] << std::endl;
+       std::cout << "tolerance = " << sbuf[1] << std::endl;
+       bar  = sbuf[0];
+       bar2 = sbuf[1];
     }
     else
     {
-      /* Prepare for encoding */
-      // Read metadata
-      cout << "Enter input file name []: ";
-      getline (cin,in_name);
-      cout << "Enter output file name []: ";
-      getline (cin,out_name);
-      cout << "Enter file type (0: regular output; 1: backup) [0]: ";
-      getline (cin,bar);
-      cout << "Enter base cutoff relative tolerance [1e-16]: ";
-      getline (cin,bar2);
+       std::cout << file_name << " doesn't exists." << std::endl;
+       //NECe 2019/10/02
+       
+       cout << "usage: ./wrenc original_000.h5 compressed_000.h5 TYPE TOLERANCE\n";
+       cout << "where TYPE=(0: regular output; 1: backup) and TOLERANCE=(e.g. 1.0e-5)\n";
+       cout << "interactive mode if not enough arguments are passed.\n";
+   
+       if ( argc == 5 )
+       {
+         cout << "automatic mode.";
+         in_name = argv[1];
+         out_name = argv[2];
+         bar = argv[3];
+         bar2 = argv[4];
+       }
+       else
+       {
+         /* Prepare for encoding */
+         // Read metadata
+         cout << "Enter input file name []: ";
+         getline (cin,in_name);
+         cout << "Enter output file name []: ";
+         getline (cin,out_name);
+         cout << "Enter file type (0: regular output; 1: backup) [0]: ";
+         getline (cin,bar);
+         cout << "Enter base cutoff relative tolerance [1e-16]: ";
+         getline (cin,bar2);
+       }
     }
-
+     
     stringstream(bar) >> ifiletype;
     stringstream(bar2) >> tol_base;
 
@@ -470,3 +544,4 @@ int main( int argc, char *argv[] )
 
     return 0;
 }
+

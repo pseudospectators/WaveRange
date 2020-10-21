@@ -1,0 +1,4 @@
+&in_name=ux_hit.h5
+&out_name=ux_hit_lr.enc.h5
+&file_type=0
+&tolerance=1e-3

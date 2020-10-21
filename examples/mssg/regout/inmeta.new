@@ -1,0 +1,7 @@
+&prefix_name=n_tm
+&ext_name=.enc
+&file_type=0
+&input_data_type=1
+&endian_conversion=1
+&tolerance=1e-5
+&id_of_proc=0
