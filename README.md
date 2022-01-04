@@ -9,7 +9,7 @@ References:
 [1] 
 D. Kolomenskiy, R. Onishi, H. Uehara "WaveRange: wavelet-based data compression for three-dimensional numerical simulations on regular grids" 
 Journal of Visualization, accepted manuscript, 2022. https://doi.org/10.1007/s12650-021-00813-8
-Preprint: http://arxiv.org/abs/1810.04822
+(preprint: http://arxiv.org/abs/1810.04822)
 
 [2]
 doc/cfdproc2017.pdf
